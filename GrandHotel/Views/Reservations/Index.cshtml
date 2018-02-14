@@ -8,32 +8,32 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="Reservations" asp-action="Index" method="get">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-controller="Reservations" asp-action="VéficationDisponi" method="get">
+            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
 
             <div class="form-group">
                 <label>Date debut Séjour</label>
                 <input asp-for="JourDebutSejour" class="form-control" />
-                <span asp-validation-for="JourDebutSejour" class="text-danger"></span>
+                <span asp-validation-for="JourDebutSejour" class="text-danger" ></span>
             </div>
             <div class="form-group">
                 <label>Nombre de nuit</label>
-                <input asp-for="NombreDeNuit" class="form-control" />
+                <input asp-for="NombreDeNuit" class="form-control"  />
                 <span asp-validation-for="NombreDeNuit" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Nombre de Personnes</label>
-                <input asp-for="NbPersonnes" class="form-control" />
+                <input asp-for="NbPersonnes" class="form-control"  min="1" max="5"/>
                 <span asp-validation-for="NbPersonnes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>heure d'arrivée</label>
-                <input asp-for="HeureArrivee" class="form-control" />
+                <input asp-for="HeureArrivee" class="form-control" min="1" max="24" />
                 <span asp-validation-for="HeureArrivee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Séjour pour le travail</label>
-                <select asp-for="Travail">
+                <select asp-for="Travail" >
                     <option value="null">Toutes</option>
                     <option value="true">Oui</option>
                     <option value="false">Autres</option>
@@ -46,7 +46,31 @@
     </div>
 </div>
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations.First().NumChambreNavigation.Numero)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumeroDeChambre)
+                </td>
+                <td>
+                    @*<a asp-action="Details" asp-route-id="@item.IdAliment">Details</a> |*@
+                    @*  <a asp-action="Details" asp-route-id="@item.IdAliment" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |*@
 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @*<table class="table">
         <thead>
