@@ -33,7 +33,8 @@ namespace GrandHotel.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Adresse>(entity =>
             {
                 entity.HasKey(e => e.IdClient);
