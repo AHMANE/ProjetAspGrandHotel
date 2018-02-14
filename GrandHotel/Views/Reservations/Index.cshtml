@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GrandHotel.Models.Reservation>
+﻿@model GrandHotel.Models.ReservationVM
 
 @{
     ViewData["Title"] = "Index";
@@ -6,60 +6,99 @@
 
 <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Reservations" asp-action="Index" method="get">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label>Date debut Séjour</label>
+                <input asp-for="JourDebutSejour" class="form-control" />
+                <span asp-validation-for="JourDebutSejour" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Nombre de nuit</label>
+                <input asp-for="NombreDeNuit" class="form-control" />
+                <span asp-validation-for="NombreDeNuit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Nombre de Personnes</label>
+                <input asp-for="NbPersonnes" class="form-control" />
+                <span asp-validation-for="NbPersonnes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>heure d'arrivée</label>
+                <input asp-for="HeureArrivee" class="form-control" />
+                <span asp-validation-for="HeureArrivee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Séjour pour le travail</label>
+                <select asp-for="Travail">
+                    <option value="null">Toutes</option>
+                    <option value="true">Oui</option>
+                    <option value="false">Autres</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Filtrer" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@*<table class="table">
+        <thead>
+            <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NbPersonnes)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.HeureArrivee)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Travail)
+                    </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.NbPersonnes)
+                    @Html.DisplayNameFor(model => model.Reservations.First().IdClientNavigation)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.HeureArrivee)
+                    @Html.DisplayNameFor(model => model.Reservations.First().JourNavigation)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Travail)
+                    @Html.DisplayNameFor(model => model.Reservations.First().NumChambreNavigation)
                 </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdClientNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JourNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumChambreNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NbPersonnes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HeureArrivee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Travail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdClientNavigation.Civilite)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JourNavigation.Jour)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumChambreNavigation.Numero)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model.Reservations) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NbPersonnes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HeureArrivee)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Travail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdClientNavigation.Civilite)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JourNavigation.Jour)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumChambreNavigation.Numero)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@
