@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrandHotel.Models
 {
@@ -9,7 +10,7 @@ namespace GrandHotel.Models
         {
             Facture = new HashSet<Facture>();
             Reservation = new HashSet<Reservation>();
-            Telephone = new HashSet<Telephone>();
+            Telephone = new List<Telephone>();
         }
 
         public int Id { get; set; }
@@ -19,10 +20,12 @@ namespace GrandHotel.Models
         public string Email { get; set; }
         public bool CarteFidelite { get; set; }
         public string Societe { get; set; }
+        [NotMapped]
+        public Telephone Tel { get; set; }
 
         public Adresse Adresse { get; set; }
         public ICollection<Facture> Facture { get; set; }
         public ICollection<Reservation> Reservation { get; set; }
-        public ICollection<Telephone> Telephone { get; set; }
+        public IList<Telephone> Telephone { get; set; }
     }
 }

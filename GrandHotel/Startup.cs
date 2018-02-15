@@ -33,6 +33,18 @@ namespace GrandHotel
                 .AddEntityFrameworkStores<GrandHotelDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;                
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                //options.Password.RequiredUniqueChars = 6;
+
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 

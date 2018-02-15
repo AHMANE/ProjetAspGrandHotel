@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace GrandHotel.Models
 {
@@ -7,6 +8,7 @@ namespace GrandHotel.Models
     {
         public string Numero { get; set; }
         public int IdClient { get; set; }
+        [DisplayName("Type de Numero")]
         public string CodeType { get; set; }
         public bool Pro { get; set; }
 
