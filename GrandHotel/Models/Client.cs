@@ -29,11 +29,11 @@ namespace GrandHotel.Models
 
         [Display(Name = "Reservations")]
         public ICollection<Reservation> Reservation { get; set; }
-        public ICollection<Telephone> Telephone { get; set; }
+        public IList<Telephone> Telephone { get; set; }
 
         [NotMapped]
         [Display(Name = "Reservations en cours")]
         public int ReservationEnCours{ get; set; }
-        public IList<Telephone> Telephone { get; set; }
+        
     }
 }
