@@ -24,7 +24,8 @@ namespace GrandHotel.Controllers
         public async Task<IActionResult> Index(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
             ReservationVM tvm = new ReservationVM();
-
+            tvm.JourDebutSejour = DateTime.Today;
+            JourDebutSejour = DateTime.Today;
             // ne recuprère pas direct les données mais juste les données dont on a besoin
             IQueryable<Reservation> tac = _context.Reservation;
             if (Travail.HasValue)
@@ -36,25 +37,27 @@ namespace GrandHotel.Controllers
 
             tvm.Reservations = await tac.ToListAsync();
             //var grandHotelDbContext = _context.Reservation.Include(r => r.IdClientNavigation).Include(r => r.JourNavigation).Include(r => r.NumChambreNavigation);
-            return View(tvm);
+            return View("Index", tvm);
         }
-
+        //public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
             IQueryable<Reservation> tac = _context.Reservation;
             if (Travail.HasValue)
                 tac = tac.Where(s => s.Travail == Travail);
 
-          
 
-            ReservationVM tvm = new ReservationVM();
-            
+            if (ModelState.IsValid)
+            {
+
+                ReservationVM tvm = new ReservationVM();
+                tvm.JourDebutSejour = DateTime.Today;
                 tvm.Reservations = new List<Reservation>();
                 var DateDebutNbreNuit = JourDebutSejour.AddDays(NombreDeNuit);
                 // Requête SQL optimisée : on ramène uniquement les infos nécessaires
                 string req = @"select Numero
                     from Chambre 
-                    where NbLits = @NbreNuits
+                    where NbLits BETWEEN @NbreNuits and '5'
                     except
                     select NumChambre
                     from Reservation
@@ -75,17 +78,21 @@ namespace GrandHotel.Controllers
                         {
 
                             var res = new Reservation();
-                        
+
                             res.NumeroDeChambre = (short)sdr["Numero"];
 
                             tvm.Reservations.Add(res);
 
+
                         }
+                        ViewBag.rest = tvm.Reservations.Count;
                     }
-                    
                 }
                 return View("Index", tvm);
-           
+
+            }
+            return View("Index");
+
         }
 
         // GET: Reservations/Details/5
@@ -96,11 +103,66 @@ namespace GrandHotel.Controllers
                 return NotFound();
             }
 
+            if (ModelState.IsValid)
+            {
+
+                var cmb = new List<Chambre>();
+
+                // Requête SQL optimisée : on ramène uniquement les infos nécessaires
+                string req = @" select Numero, Etage, Bain, WC, NbLits, Prix 
+                            from Chambre
+                            inner join TarifChambre on NumChambre=Numero
+                            inner join Tarif on Code = CodeTarif
+                            where Numero = @NumChambre and YEAR(DateDebut) = YEAR(GETDATE())
+                            group by  Numero, Etage, Bain, WC, NbLits, Prix";
+
+                using (var conn = (SqlConnection)_context.Database.GetDbConnection())
+                {
+
+                    var cmd = new SqlCommand(req, conn);
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "NumChambre", Value = id });
+                    await conn.OpenAsync();
+
+                    using (var sdr = await cmd.ExecuteReaderAsync())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            var res = new Chambre();
+
+                            res.Numero = (short)sdr["Numero"];
+                            res.Etage = (byte)sdr["Etage"];
+                            res.Bain = (bool)sdr["Bain"];
+                            res.Wc = (bool)sdr["WC"];
+                            res.NbLits = (byte)sdr["NbLits"];
+                            res.PrixChambre = (decimal)sdr["Prix"];
+
+                            cmb.Add(res);
+
+
+                        }
+                        
+                    }
+                }
+                return View("Details", cmb);
+
+            }
+            return View("Details");
+
+        }
+
+        public async Task<IActionResult> DetailsChambre(short? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var reservation = await _context.Reservation
                 .Include(r => r.IdClientNavigation)
                 .Include(r => r.JourNavigation)
                 .Include(r => r.NumChambreNavigation)
-                .SingleOrDefaultAsync(m => m.NumChambre == id);
+                .SingleOrDefaultAsync(m => m.NumeroDeChambre == id);
             if (reservation == null)
             {
                 return NotFound();
@@ -108,6 +170,7 @@ namespace GrandHotel.Controllers
 
             return View(reservation);
         }
+
 
         // GET: Reservations/Create
         public IActionResult Create()

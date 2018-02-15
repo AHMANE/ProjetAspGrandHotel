@@ -3,37 +3,40 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+@{ 
+    var date = DateTime.Today.ToString("{dd/MM/yyyy}");
+}
 <h2>Index</h2>
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="Reservations" asp-action="VéficationDisponi" method="get">
+        <form asp-action="VéficationDisponi" method="get">
             @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
                 <label>Date debut Séjour</label>
-                <input asp-for="JourDebutSejour" class="form-control" />
+                <input asp-for="JourDebutSejour" class="form-control"  />
                 <span asp-validation-for="JourDebutSejour" class="text-danger" ></span>
             </div>
             <div class="form-group">
                 <label>Nombre de nuit</label>
-                <input asp-for="NombreDeNuit" class="form-control"  />
+                <input asp-for="NombreDeNuit" class="form-control" />
                 <span asp-validation-for="NombreDeNuit" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Nombre de Personnes</label>
-                <input asp-for="NbPersonnes" class="form-control"  min="1" max="5"/>
+                <input asp-for="NbPersonnes" class="form-control" />
                 <span asp-validation-for="NbPersonnes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>heure d'arrivée</label>
-                <input asp-for="HeureArrivee" class="form-control" min="1" max="24" />
+                <input asp-for="HeureArrivee" class="form-control" />
                 <span asp-validation-for="HeureArrivee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Séjour pour le travail</label>
-                <select asp-for="Travail" >
+                <select asp-for="Travail">
                     <option value="null">Toutes</option>
                     <option value="true">Oui</option>
                     <option value="false">Autres</option>
@@ -52,26 +55,51 @@
             <th>
                 @Html.DisplayNameFor(model => model.Reservations.First().NumChambreNavigation.Numero)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservations.First().NumChambreNavigation.NbLits)
+
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Reservations)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumeroDeChambre)
-                </td>
-                <td>
-                    @*<a asp-action="Details" asp-route-id="@item.IdAliment">Details</a> |*@
-                    @*  <a asp-action="Details" asp-route-id="@item.IdAliment" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |*@
 
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroDeChambre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumChambreNavigation.NbLits)
+            </td>
+
+
+            <td>
+                @* <a asp-action="Details" asp-route-id="@item.NumChambre">Details</a> |*@
+                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@item.NumeroDeChambre" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |
+                @Html.ActionLink("Details", "Details", new { id = item.NumeroDeChambre })
+                @*  <a asp-action="Details" asp-route-id="@item.IdAliment" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |*@
+
+            </td>
+
+        </tr>
         }
-    </tbody>
-</table>
 
+    </tbody>
+    @{
+        string phrase = "";
+        if (@ViewBag.rest == 0)
+        {
+            phrase = "Pas de Chambre disponible avec les paramètre de recherche que vous avez saisi";  //opérator tenaire
+        }
+
+         
+    }
+</table>
+ <p style="color:red">@phrase</p>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 @*<table class="table">
         <thead>
             <tr>
@@ -118,9 +146,9 @@
                     @Html.DisplayFor(modelItem => item.NumChambreNavigation.Numero)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
             </tr>
     }
