@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrandHotel.Models
 {
@@ -11,6 +13,7 @@ namespace GrandHotel.Models
             TarifChambre = new HashSet<TarifChambre>();
         }
 
+        [Display(Name = "Numero de chambre")]
         public short Numero { get; set; }
         public byte Etage { get; set; }
         public bool Bain { get; set; }
@@ -21,5 +24,13 @@ namespace GrandHotel.Models
 
         public ICollection<Reservation> Reservation { get; set; }
         public ICollection<TarifChambre> TarifChambre { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Tarif en cours (€)")]
+        public decimal Prix { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Non disponible")]
+        public DateTime Disponibilite { get; set; }
     }
 }
