@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GrandHotel.Models
 {
@@ -10,7 +11,7 @@ namespace GrandHotel.Models
             Reservation = new HashSet<Reservation>();
             TarifChambre = new HashSet<TarifChambre>();
         }
-
+        [Display(Name = "Numéro de chambre Disponible")]
         public short Numero { get; set; }
         public byte Etage { get; set; }
         public bool Bain { get; set; }
