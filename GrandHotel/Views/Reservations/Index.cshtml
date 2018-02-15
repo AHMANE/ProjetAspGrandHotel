@@ -76,7 +76,7 @@
 
             <td>
                 @* <a asp-action="Details" asp-route-id="@item.NumChambre">Details</a> |*@
-                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@item.NumeroDeChambre" asp-route-ids="@Reservations.NombreDeNuit", class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |
+                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@item.NumeroDeChambre" asp-route-ids="@ViewBag.NbreNuits", class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |
                 @Html.ActionLink("Details", "Details", new { id = item.NumeroDeChambre })
                 @*  <a asp-action="Details" asp-route-id="@item.IdAliment" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |*@
 
