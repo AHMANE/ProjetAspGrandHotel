@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GrandHotel.Data;
 using GrandHotel.Models;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrandHotel.Controllers
 {
@@ -42,6 +43,8 @@ namespace GrandHotel.Controllers
         //public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
+            ViewBag.NbreNuits = NombreDeNuit;
+            
             IQueryable<Reservation> tac = _context.Reservation;
             if (Travail.HasValue)
                 tac = tac.Where(s => s.Travail == Travail);
@@ -96,7 +99,7 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Reservations/Details/5
-        public async Task<IActionResult> Details(short? id)
+        public async Task<IActionResult> Details(short? id, decimal ids)
         {
             if (id == null)
             {
@@ -107,9 +110,9 @@ namespace GrandHotel.Controllers
             {
 
                 var cmb = new List<Chambre>();
-
+               
                 // Requête SQL optimisée : on ramène uniquement les infos nécessaires
-                string req = @" select Numero, Etage, Bain, WC, NbLits, Prix 
+                string req = @" select Numero, Etage, Bain, WC, NbLits, Prix, Prix*@NbreNuit as PrixTotale
                             from Chambre
                             inner join TarifChambre on NumChambre=Numero
                             inner join Tarif on Code = CodeTarif
@@ -121,6 +124,8 @@ namespace GrandHotel.Controllers
 
                     var cmd = new SqlCommand(req, conn);
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "NumChambre", Value = id });
+                    cmd.Parameters.Add(new SqlParameter { ParameterName = "NbreNuit", Value = ids });
+
                     await conn.OpenAsync();
 
                     using (var sdr = await cmd.ExecuteReaderAsync())
@@ -136,6 +141,7 @@ namespace GrandHotel.Controllers
                             res.Wc = (bool)sdr["WC"];
                             res.NbLits = (byte)sdr["NbLits"];
                             res.PrixChambre = (decimal)sdr["Prix"];
+                            res.PrixTotal = (decimal)sdr["PrixTotale"];
 
                             cmb.Add(res);
 
@@ -171,13 +177,21 @@ namespace GrandHotel.Controllers
             return View(reservation);
         }
 
-
+        [Authorize]
         // GET: Reservations/Create
-        public IActionResult Create()
+        public IActionResult Create(short id, byte etage, bool Bain, byte NbLits, decimal PrixTotal)
         {
-            ViewData["IdClient"] = new SelectList(_context.Client, "Id", "Civilite");
-            ViewData["Jour"] = new SelectList(_context.Calendrier, "Jour", "Jour");
-            ViewData["NumChambre"] = new SelectList(_context.Chambre, "Numero", "Numero");
+            ViewBag.Numero = id;
+            ViewBag.Etage = etage;
+            ViewBag.Bain = Bain;
+           
+            ViewBag.NbLits = NbLits;
+            ViewBag.PrixChambre = PrixTotal;
+            
+
+            // ViewData["IdClient"] = new SelectList(_context.Client, "Id", "Civilite");
+            // ViewData["Jour"] = new SelectList(_context.Calendrier, "Jour", "Jour");
+            // ViewData["NumChambre"] = new SelectList(_context.Chambre, "Numero", "Numero");
             return View();
         }
 

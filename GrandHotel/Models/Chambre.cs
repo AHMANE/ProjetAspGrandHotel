@@ -24,7 +24,10 @@ namespace GrandHotel.Models
         [Display(Name = "prix de la chmabre")]
         [NotMapped]
         public decimal PrixChambre { get; set; }
-
+        [DisplayFormat(DataFormatString = "{0:C0}")]
+        [Display(Name = "prix Total du séjour")]
+        [NotMapped]
+        public decimal PrixTotal { get; set; }
         public ICollection<Reservation> Reservation { get; set; }
         public ICollection<TarifChambre> TarifChambre { get; set; }
 

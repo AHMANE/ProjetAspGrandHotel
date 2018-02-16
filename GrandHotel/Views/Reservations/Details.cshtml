@@ -29,6 +29,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.First().PrixChambre)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().PrixTotal)
+                </th>
 
                 <th></th>
             </tr>
@@ -43,21 +46,25 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Etage)
-                </td>                         
+                </td>
                 <td>
-                    
+
                     @Html.DisplayFor(modelItem => item.Bain)
-                </td>                         
+                </td>
                 <td>
-                    
+
                     @Html.DisplayFor(modelItem => item.NbLits)
-                </td>                         
+                </td>
                 <td>
-                    
+
                     @Html.DisplayFor(modelItem => item.PrixChambre)
                 </td>
                 <td>
-                    <a asp-controller="" asp-action="" asp-route-id="@item.Numero" role="button"> Réserver<span class="btn btn-secondary glyphicon glyphicon-play "></span></a>
+
+                    @Html.DisplayFor(modelItem => item.PrixTotal)
+                </td>
+                <td>
+                    <a asp-controller="Reservations" asp-action="Create" asp-route-id="@item.Numero" asp-route-etage="@item.Etage" asp-route-Bain="@item.Bain" asp-route-NbLits="@item.NbLits"  asp-route-PrixTotal="@item.PrixTotal" role="button"> Réserver<span class="btn btn-secondary glyphicon glyphicon-play "></span></a>
 
                 </td>
             </tr>
