@@ -1,0 +1,78 @@
+﻿@model GrandHotel.Models.Reservation
+
+@{
+    ViewData["Title"] = "DetailsReservarion";
+}
+
+<h2>Récapulatif de votre réservation</h2>
+<hr  style="color:rebeccapurple;font-size:large;"/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NumChambre" class="control-label"></label>
+                <input asp-for="NumChambre" class="form-control" value="@ViewBag.Numero" disabled=""/>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="Jour" class="control-label"></label>
+                <input  class="form-control" value="@ViewBag.Jour"  disabled=""/>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdClient" class="control-label"></label>
+                <input asp-for="IdClient" class="form-control" value="@ViewBag.IdClient" disabled=""/>
+                @*<select asp-for="IdClient" class="form-control" asp-items="ViewBag.IdClient" ></select>*@
+            </div>
+            <div class="form-group">
+                <label asp-for="NbPersonnes" class="control-label"></label>
+                <input asp-for="NbPersonnes" class="form-control" value="@ViewBag.NbrePersonne" disabled="" />
+                
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Travail" class="control-label"></label>
+                <input asp-for="Travail" class="form-control" value="@ViewBag.travail" disabled=""/>
+          
+            </div>
+            
+        </form>
+    </div>
+</div>*
+<h3>Détait de la chambre</h3>
+<hr style="color:rebeccapurple;font-size:large;" />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.NumChambreNavigation.Etage" class="control-label"></label>
+                <input asp-for="@Model.NumChambreNavigation.Etage" class="form-control" value="@ViewBag.Etage" disabled="" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.NumChambreNavigation.NbLits" class="control-label"></label>
+                <input asp-for="@Model.NumChambreNavigation.NbLits" class="form-control" value="@ViewBag.NbLits" disabled=""/>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreDeNuit" class="control-label"></label>
+                <input asp-for="NombreDeNuit" class="form-control" value="@ViewBag.NombreDeNuit" disabled="" />
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.NumChambreNavigation.PrixTotal" class="control-label"></label>
+                <input asp-for="@Model.NumChambreNavigation.PrixTotal" class="form-control" value="@ViewBag.PrixTotal" disabled="" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Retour</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
