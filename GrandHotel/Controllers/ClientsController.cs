@@ -62,19 +62,26 @@ namespace GrandHotel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
         {
-            if (ModelState.IsValid)
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
+            if (ModelState.IsValid && uniqueTel==null)
             {
                 var user = await _user.GetUserAsync(User);
                 client.Email = user.Email;
                 client.Telephone.Add(client.Tel);
+                if(client.Adresse.Rue==null || client.Adresse.Ville==null || client.Adresse.CodePostal == null)
+                {
+                    client.Adresse.Rue = "non renseigné";
+                    client.Adresse.CodePostal = "00000";
+                    client.Adresse.Ville = "non renseigné";
+                }
                 _context.Add(client);  
                 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(HomeController.Index),"Home");
                 //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
                 //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            
+            ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
             return View(client);
         }
 
