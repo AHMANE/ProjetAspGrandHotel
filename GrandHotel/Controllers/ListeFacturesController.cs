@@ -24,9 +24,11 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Factures
-        //[Authorize]
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(int? annee)
         {
+            if (!annee.HasValue)
+                annee = DateTime.Today.Year;
             var user = await _user.GetUserAsync(User);
             
             var client= _context.Client.Where(c => c.Email == user.Email).FirstOrDefault();
@@ -35,12 +37,12 @@ namespace GrandHotel.Controllers
                 return NotFound();
             }
             
-            var grandHotelDbContext = _context.Facture.Include(f => f.CodeModePaiementNavigation).Include(f => f.IdClientNavigation).Where(f=>f.IdClient== client.Id);
+            var grandHotelDbContext = _context.Facture.OrderByDescending(s=>s.DateFacture).Include(f => f.CodeModePaiementNavigation).Include(f => f.IdClientNavigation).Where(f=>f.IdClient== client.Id && f.DateFacture.Year==annee);
             return View(await grandHotelDbContext.ToListAsync());
         }
 
         // GET: Factures/Details/5
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
