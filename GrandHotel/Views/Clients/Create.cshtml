@@ -76,6 +76,7 @@
             <div class="form-group">
                 <label asp-for="Tel.Numero" class="control-label"></label>
                 <input asp-for="Tel.Numero" class="form-control" />
+                <span class="text-danger">@ViewBag.ErreurTelephone</span>
                 <span asp-validation-for="Tel.Numero"class="text-danger"></span>
             </div>
             <div class="form-group">
