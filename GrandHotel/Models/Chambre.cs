@@ -30,5 +30,13 @@ namespace GrandHotel.Models
         public decimal PrixTotal { get; set; }
         public ICollection<Reservation> Reservation { get; set; }
         public ICollection<TarifChambre> TarifChambre { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Tarif en cours (€)")]
+        public decimal Prix { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Non disponible")]
+        public DateTime Disponibilite { get; set; }
     }
 }

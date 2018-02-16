@@ -1,0 +1,90 @@
+﻿@model IEnumerable<GrandHotel.Models.Client>
+
+@{
+    ViewData["Title"] = "Liste des clients";
+}
+
+<h2>Liste des clients</h2>
+
+<form asp-controller="ListeClients" asp-action="ListByFirstLetter">
+    <ul class="list-inline">
+        <li>
+            @{
+                for (int i = 0; i < 26; i++)
+                {
+                    string lettre = char.ConvertFromUtf32(65 + i);
+                    <a asp-action="ListByFirstLetter" asp-route-id="@lettre">@lettre</a>
+                }
+            }
+        </li>
+    </ul>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prenom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reservation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReservationEnCours)
+            </th>
+            @*<th>
+                        @{
+                int nbReservationEnCours = (int)@ViewData["NbReservationEnCours"];
+                string phrase = nbReservationEnCours > 0 ? "Réservations en cours: " : "Aucune réservation en cours";
+                        }
+                    </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prenom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reservation.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReservationEnCours)
+                </td>
+
+
+                @*<td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="GestionInterne" asp-action="Index"><strong>Retour à la page Gestion Interne</strong></a>
+

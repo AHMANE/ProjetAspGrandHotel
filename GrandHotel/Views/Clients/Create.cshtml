@@ -1,0 +1,114 @@
+﻿@model GrandHotel.Models.Client
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Client</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @*<label asp-for="Civilite" class="control-label"></label>
+                    <input asp-for="Civilite" class="form-control" />
+                    <span asp-validation-for="Civilite" class="text-danger"></span>*@
+
+                <label asp-for="Civilite" class="control-label"></label>
+                <select asp-for="Civilite" class="form-control">
+                    <option value='M'>M</option>
+                    <option value='Mme'>Mme</option>
+                    <option value='Mlle'>Mlle</option>
+                </select>
+                <span asp-validation-for="Civilite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nom" class="control-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Prenom" class="control-label"></label>
+                <input asp-for="Prenom" class="form-control" />
+                <span asp-validation-for="Prenom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" value=@ViewBag.Email disabled="disabled"/>
+                <span asp-validation-for="Email" class="text-danger" ></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="CarteFidelite" /> @Html.DisplayNameFor(model => model.CarteFidelite)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Societe" class="control-label"></label>
+                <input asp-for="Societe" class="form-control" />
+                <span asp-validation-for="Societe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Adresse.Rue" class="control-label"></label>
+                <input asp-for="Adresse.Rue" class="form-control" />
+                <span asp-validation-for="Adresse.Rue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Adresse.Complement" class="control-label"></label>
+                <input asp-for="Adresse.Complement" class="form-control" />
+                <span asp-validation-for="Adresse.Complement" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Adresse.CodePostal" class="control-label"></label>
+                <input asp-for="Adresse.CodePostal" class="form-control" />
+                <span asp-validation-for="Adresse.CodePostal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Adresse.Ville" class="control-label"></label>
+                <input asp-for="Adresse.Ville" class="form-control" />
+                <span asp-validation-for="Adresse.Ville" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Tel.Numero" class="control-label"></label>
+                <input asp-for="Tel.Numero" class="form-control" />
+                <span asp-validation-for="Tel.Numero"class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tel.CodeType" class="control-label"></label>
+                <select asp-for="Tel.CodeType" class="form-control">
+                    <option value='M'>Mobile</option>
+                    <option value='F'>Fixe</option>
+                </select>
+                <span asp-validation-for="Tel.Numero" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Tel.Pro" /> <span>Numero professionnel</span>
+                    </label>
+                </div>
+            </div>
+            @*@{ 
+                Model.Telephone.Add(tel);
+            }*@
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,52 @@
+﻿@model IEnumerable<GrandHotel.Models.Chambre>
+
+@{
+    ViewData["Title"] = "Liste des chambres";
+}
+
+<h2>Liste des chambres</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Numero)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Prix)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Disponibilite)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+    {
+        <tr>
+            <th>
+                @Html.DisplayFor(model => item.Numero)
+            </th>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Prix)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Disponibilite)
+            </td>
+
+
+
+            @*<td>
+            <a asp-action="Edit" asp-route-id="@item.Numero">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Numero">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Numero">Delete</a>
+        </td>*@
+        </tr>
+}
+    </tbody>
+</table>
+        <a asp-controller="GestionInterne" asp-action="Index"><strong>Retour à la page Gestion Interne</strong></a>

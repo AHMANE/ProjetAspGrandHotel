@@ -232,7 +232,9 @@ namespace GrandHotel.Controllers
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    
+                    //return View("~/Views/Clients/Create.cshtml");
+                    return RedirectToAction(nameof(ClientsController.Create), "Clients");
                 }
                 AddErrors(result);
             }
