@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace GrandHotel.Models
 {
@@ -12,6 +13,7 @@ namespace GrandHotel.Models
         public decimal TauxTva { get; set; }
         public decimal TauxReduction { get; set; }
 
+        [DisplayName("Mode de paiement")]
         public Facture IdFactureNavigation { get; set; }
     }
 }

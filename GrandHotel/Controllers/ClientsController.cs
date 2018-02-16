@@ -52,7 +52,9 @@ namespace GrandHotel.Controllers
         {
             var user = await _user.GetUserAsync(User);
             @ViewBag.Email = user.Email;
-            return View();
+            var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
+            client.Tel = client.Telephone[0];
+            return View(client);
         }
 
         // POST: Clients/Create
@@ -63,7 +65,8 @@ namespace GrandHotel.Controllers
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
         {
             var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
-            if (ModelState.IsValid && uniqueTel==null)
+            var clientBase = _context.Client.Where(c => c.Email == client.Email).FirstOrDefault();
+            if (ModelState.IsValid && uniqueTel==null && clientBase==null )
             {
                 var user = await _user.GetUserAsync(User);
                 client.Email = user.Email;
@@ -81,6 +84,8 @@ namespace GrandHotel.Controllers
                 //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
                 //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
+            if(clientBase==null)
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
             return View(client);
         }
