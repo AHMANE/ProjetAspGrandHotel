@@ -14,14 +14,14 @@ namespace GrandHotel.Models.AccountViewModels
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Le {0} doit avoir contenir entre {2} et {1} caratères.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mot de Passe")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Confirmer Mot de Passe")]
+        [Compare("Password", ErrorMessage = "Les Mots de Passe ne correspondent pas.")]
         public string ConfirmPassword { get; set; }
     }
 }
