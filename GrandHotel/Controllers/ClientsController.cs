@@ -54,8 +54,11 @@ namespace GrandHotel.Controllers
             @ViewBag.Email = user.Email;
             var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
             if(client!=null)
+            {
                 client.Tel = client.Telephone[0];
-            return View(client);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            return View();
         }
 
         // POST: Clients/Create
