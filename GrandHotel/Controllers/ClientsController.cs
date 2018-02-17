@@ -52,7 +52,10 @@ namespace GrandHotel.Controllers
         {
             var user = await _user.GetUserAsync(User);
             @ViewBag.Email = user.Email;
-            return View();
+            var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
+            if(client!=null)
+                client.Tel = client.Telephone[0];
+            return View(client);
         }
 
         // POST: Clients/Create
@@ -62,20 +65,34 @@ namespace GrandHotel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
         {
-            if (ModelState.IsValid)
+            
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
+            var clientBase = _context.Client.Where(c => c.Email == client.Email).FirstOrDefault();
+            if (ModelState.IsValid && uniqueTel==null && clientBase==null )
             {
                 var user = await _user.GetUserAsync(User);
                 client.Email = user.Email;
                 client.Telephone.Add(client.Tel);
+                if(client.Adresse.Rue==null || client.Adresse.Ville==null || client.Adresse.CodePostal == null)
+                {
+                    client.Adresse.Rue = "non renseigné";
+                    client.Adresse.CodePostal = "00000";
+                    client.Adresse.Ville = "non renseigné";
+                }
                 _context.Add(client);  
                 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(HomeController.Index),"Home");
                 //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
                 //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            
-            return View(client);
+            if(clientBase!=null)
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            if(uniqueTel !=null)
+            {
+                ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            }
+            return View(client);         
         }
 
         // GET: Clients/Edit/5

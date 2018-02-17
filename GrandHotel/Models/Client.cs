@@ -15,10 +15,14 @@ namespace GrandHotel.Models
         }
 
         public int Id { get; set; }
+        [Required]
         public string Civilite { get; set; }
+        [Required(ErrorMessage ="Le nom est requis")]
         public string Nom { get; set; }
+        [Required(ErrorMessage = "Le prenom est requis")]
         public string Prenom { get; set; }
         public string Email { get; set; }
+        [Required]
         public bool CarteFidelite { get; set; }
         public string Societe { get; set; }
         [NotMapped]

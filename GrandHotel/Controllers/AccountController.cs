@@ -234,6 +234,7 @@ namespace GrandHotel.Controllers
                     _logger.LogInformation("User created a new account with password.");
                     
                     //return View("~/Views/Clients/Create.cshtml");
+
                     return RedirectToAction(nameof(ClientsController.Create), "Clients");
                 }
                 AddErrors(result);

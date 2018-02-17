@@ -47,4 +47,18 @@ namespace GrandHotel.Models
 
 
     }
+    public class ReserVationSession
+    {
+
+        [Display(Name = "Numéro de chambre ")]
+        public short NumChambre { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{dd/MM/yyyy}")]
+        public DateTime Jour { get; set; }
+        [Display(Name = "Nombre de perssonnes ")]
+        public byte NbPersonnes { get; set; }
+        public byte HeureArrivee { get; set; }
+        public bool? Travail { get; set; }
+        public int NombreDeNuit { get; set; }
+    }
 }

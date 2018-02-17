@@ -1,0 +1,68 @@
+﻿@model IEnumerable<GrandHotel.Models.Facture>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Liste des Factures</h1>
+
+<br />
+
+@*<a asp-controller="Home" asp-action="Indec">Retour</a>*@
+<a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-primary glyphicon glyphicon-chevron-left" role="button">  Retour</a>
+
+<br />
+<br />
+<form asp-controller="ListeFactures" asp-action="Index" method="get">
+
+    <select name=annee>
+        <option value=2018>2018</option>
+        <option value=2017>2017</option>
+        <option value=2016>2016</option>
+    </select>
+
+    <input type="submit" value="Trier" />
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateFacture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatePaiement)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CodeModePaiementNavigation)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.IdClientNavigation)
+                </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateFacture)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DatePaiement)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CodeModePaiementNavigation.Code)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.IdClientNavigation.Civilite)
+                    </td>*@
+                <td>
+
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
