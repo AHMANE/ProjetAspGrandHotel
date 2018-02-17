@@ -1,0 +1,59 @@
+﻿@model IEnumerable<GrandHotel.Models.LigneFacture>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<a asp-area="" asp-controller="ListeFactures" asp-action="Index" class="btn btn-primary glyphicon glyphicon-chevron-left" role="button">  Retour</a>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontantHt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TauxTva)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TauxReduction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdFactureNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantite)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MontantHt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TauxTva)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TauxReduction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdFactureNavigation.CodeModePaiement)
+                </td>
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+</table>

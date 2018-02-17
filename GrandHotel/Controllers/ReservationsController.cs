@@ -9,24 +9,32 @@ using GrandHotel.Data;
 using GrandHotel.Models;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Authorization;
+using GrandHotel.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace GrandHotel.Controllers
 {
     public class ReservationsController : Controller
     {
         private readonly GrandHotelDbContext _context;
-
-        public ReservationsController(GrandHotelDbContext context)
+        private readonly UserManager<ApplicationUser> _user;
+        public ReservationsController(GrandHotelDbContext context, UserManager<ApplicationUser>user)
         {
+            _user = user;
             _context = context;
         }
 
         // GET: Reservations
         public async Task<IActionResult> Index(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
+           
             ReservationVM tvm = new ReservationVM();
             tvm.JourDebutSejour = DateTime.Today;
             JourDebutSejour = DateTime.Today;
+
+
+            
+
             // ne recuprère pas direct les données mais juste les données dont on a besoin
             IQueryable<Reservation> tac = _context.Reservation;
             if (Travail.HasValue)
@@ -34,16 +42,42 @@ namespace GrandHotel.Controllers
             if (ModelState.IsValid)
             {
                 tac = tac.Where(s => s.Jour == JourDebutSejour && s.NbPersonnes == NbPersonnes && s.HeureArrivee == HeureArrivee);
+
             }
 
             tvm.Reservations = await tac.ToListAsync();
+
             //var grandHotelDbContext = _context.Reservation.Include(r => r.IdClientNavigation).Include(r => r.JourNavigation).Include(r => r.NumChambreNavigation);
             return View("Index", tvm);
+           
         }
         //public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
+            
+            //*****************************************Créationn d'un session pour stocker les valeurs saisies**********************************//
+            List<ReserVationSession> reservations = new List<ReserVationSession>();
+            for (int jours = 0; jours < NombreDeNuit; jours++)
+            {
+                ReserVationSession reservation = new ReserVationSession();
+                reservation.Jour = JourDebutSejour.AddDays(jours);                
+                reservation.NombreDeNuit = NombreDeNuit;
+                reservation.NbPersonnes = NbPersonnes;
+                reservation.HeureArrivee = HeureArrivee;
+                
+                reservation.Travail = Travail;
+                reservations.Add(reservation);
+                
+            }
+
+            HttpContext.Session.SetObjectAsJson("Resa", reservations);
+
+            //*****************************************Fin_Créationn d'un session pour stocker les valeurs saisies**********************************//
+
             ViewBag.NbreNuits = NombreDeNuit;
+            ViewBag.NbPersonnes = NbPersonnes;
+            //ViewBag.Jour = JourDebutSejour;
+
             
             IQueryable<Reservation> tac = _context.Reservation;
             if (Travail.HasValue)
@@ -52,8 +86,12 @@ namespace GrandHotel.Controllers
 
             if (ModelState.IsValid)
             {
+                ViewBag.Travail = Travail;
+
+                // var myComplexObject = new ReservationVM();
 
                 ReservationVM tvm = new ReservationVM();
+
                 tvm.JourDebutSejour = DateTime.Today;
                 tvm.Reservations = new List<Reservation>();
                 var DateDebutNbreNuit = JourDebutSejour.AddDays(NombreDeNuit);
@@ -74,7 +112,7 @@ namespace GrandHotel.Controllers
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "DateDebutSejour", Value = JourDebutSejour });
                     cmd.Parameters.Add(new SqlParameter { ParameterName = "DateDebutNbreNuit", Value = DateDebutNbreNuit });
                     await conn.OpenAsync();
-
+                  
                     using (var sdr = await cmd.ExecuteReaderAsync())
                     {
                         while (sdr.Read())
@@ -83,32 +121,41 @@ namespace GrandHotel.Controllers
                             var res = new Reservation();
 
                             res.NumeroDeChambre = (short)sdr["Numero"];
-
+                            
                             tvm.Reservations.Add(res);
 
 
                         }
                         ViewBag.rest = tvm.Reservations.Count;
+                        ViewBag.NbPersonnes = NbPersonnes;
+
                     }
+                   
                 }
+
                 return View("Index", tvm);
 
             }
+
             return View("Index");
-
+            
         }
-
+       
+        // **************************Afficher les détait de la chambre selectionnée Il prend en parametre Id=Numerod e chambre*****************************************//
         // GET: Reservations/Details/5
-        public async Task<IActionResult> Details(short? id, decimal ids)
+        public async Task<IActionResult> Details(short id, int ids)
         {
-            if (id == null)
+
+          
+
+            if (id == 0)
             {
                 return NotFound();
             }
-
+            
             if (ModelState.IsValid)
             {
-
+                
                 var cmb = new List<Chambre>();
                
                 // Requête SQL optimisée : on ramène uniquement les infos nécessaires
@@ -145,54 +192,75 @@ namespace GrandHotel.Controllers
 
                             cmb.Add(res);
 
-
+                            
                         }
                         
                     }
+                    HttpContext.Session.SetObjectAsJson("Cham", cmb);
                 }
+
                 return View("Details", cmb);
 
             }
             return View("Details");
 
         }
+        // ************************** Fin -Afficher les détait de la chambre selectionnée*****************************************//
 
-        public async Task<IActionResult> DetailsChambre(short? id)
+        //[Authorize]
+        public async Task<IActionResult> DetailsReservarion(short id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var user = await _user.GetUserAsync(User);
+            var client = _context.Client.Where(c => c.Email == user.Email).FirstOrDefault();
+            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+           
+            
+            ViewBag.Jour = reservations[0].Jour.Date;
+            ViewBag.NbrePersonne = reservations[0].NbPersonnes;
+            ViewBag.travail = reservations[0].Travail;
+            ViewBag.NombreDeNuit = reservations[0].NombreDeNuit;
+            ViewBag.IdClient = client.Id;
 
-            var reservation = await _context.Reservation
-                .Include(r => r.IdClientNavigation)
-                .Include(r => r.JourNavigation)
-                .Include(r => r.NumChambreNavigation)
-                .SingleOrDefaultAsync(m => m.NumeroDeChambre == id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-
-            return View(reservation);
+            //*******************Detail Chambre****//
+            var ch = HttpContext.Session.GetObjectFromJson<List<Chambre>>("Cham");
+            ViewBag.Numero = ch[0].Numero;
+            ViewBag.Etage = ch[0].Etage;
+            ViewBag.NbLits = ch[0].NbLits;
+            ViewBag.PrixTotal = ch[0].PrixTotal;
+            return View();
         }
 
         [Authorize]
         // GET: Reservations/Create
-        public IActionResult Create(short id, byte etage, bool Bain, byte NbLits, decimal PrixTotal)
+        public async Task<IActionResult> Create(short id)
         {
-            ViewBag.Numero = id;
-            ViewBag.Etage = etage;
-            ViewBag.Bain = Bain;
-           
-            ViewBag.NbLits = NbLits;
-            ViewBag.PrixChambre = PrixTotal;
-            
+            var user = await _user.GetUserAsync(User);
+            var client = _context.Client.Where(c => c.Email == user.Email).FirstOrDefault();
+            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+            Reservation reservation; 
 
-            // ViewData["IdClient"] = new SelectList(_context.Client, "Id", "Civilite");
-            // ViewData["Jour"] = new SelectList(_context.Calendrier, "Jour", "Jour");
-            // ViewData["NumChambre"] = new SelectList(_context.Chambre, "Numero", "Numero");
-            return View();
+            for (int res = 0; res < reservations.Count; res++)
+            {
+                reservation = new Reservation
+                {
+                    IdClient = client.Id,
+                    HeureArrivee = reservations[res].HeureArrivee,
+                    Jour = reservations[res].Jour,
+                    NumChambre = id,
+                    NbPersonnes = reservations[res].NbPersonnes,
+                    Travail = reservations[res].Travail
+                };
+                if (ModelState.IsValid)
+                {
+                    reservations[res].NumChambre = id;
+                    _context.Add(reservation);
+                }
+            }
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(DetailsReservarion));
+
+
         }
 
         // POST: Reservations/Create

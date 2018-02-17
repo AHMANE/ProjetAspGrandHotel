@@ -4,19 +4,19 @@
     ViewData["Title"] = "Index";
 }
 @{ 
-    var date = DateTime.Today.ToString("{dd/MM/yyyy}");
+    var date = DateTime.Today.ToString("yyyy-MM-dd");
 }
-<h2>Index</h2>
+<h2>Recherche</h2>
 
-<div class="row">
-    <div class="col-md-4">
+<div class="row" id="indexRecherch">
+    <div class=" col-lg-offset-4 col-md-4">
         <form asp-action="VéficationDisponi" method="get">
             @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+         @*   <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
 
             <div class="form-group">
                 <label>Date debut Séjour</label>
-                <input asp-for="JourDebutSejour" class="form-control"  />
+                <input asp-for="JourDebutSejour" class="form-control" min="@date" />
                 <span asp-validation-for="JourDebutSejour" class="text-danger" ></span>
             </div>
             <div class="form-group">
@@ -37,7 +37,7 @@
             <div class="form-group">
                 <label>Séjour pour le travail</label>
                 <select asp-for="Travail">
-                    <option value="null">Toutes</option>
+                   
                     <option value="true">Oui</option>
                     <option value="false">Autres</option>
                 </select>
@@ -49,9 +49,9 @@
     </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
+<table class="table table-bordered">
+    <thead class="alert-danger" >
+        <tr >
             <th>
                 @Html.DisplayNameFor(model => model.Reservations.First().NumChambreNavigation.Numero)
             </th>
@@ -65,8 +65,8 @@
         @foreach (var item in Model.Reservations)
         {
 
-        <tr>
-            <td>
+        <tr class="alert-success" >
+            <td >
                 @Html.DisplayFor(modelItem => item.NumeroDeChambre)
             </td>
             <td>
@@ -76,8 +76,9 @@
 
             <td>
                 @* <a asp-action="Details" asp-route-id="@item.NumChambre">Details</a> |*@
-                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@item.NumeroDeChambre" asp-route-ids="@ViewBag.NbreNuits", class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |
-                @Html.ActionLink("Details", "Details", new { id = item.NumeroDeChambre })
+                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@item.NumeroDeChambre" asp-route-ids="@ViewBag.NbreNuits"   class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |
+              
+                @*asp-route-NbPers="@ViewBag.NbPersonnes" asp-route-Jour="@ViewBag.Jour" asp-route-Travail="@ViewBag.Travail"*@
                 @*  <a asp-action="Details" asp-route-id="@item.IdAliment" class="btn btn-secondary glyphicon glyphicon-list " role="button"> Details</a> |*@
 
             </td>

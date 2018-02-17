@@ -1,4 +1,6 @@
-﻿using System;
+﻿//CODE DE NIRY RALISON//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,18 +11,26 @@ using GrandHotel.Data;
 using GrandHotel.Models;
 using System.Data.SqlClient;
 
+
+//--------------------------------------------------CONTROLLER LISTECLIENTS----------------------------------------//
+
 namespace GrandHotel.Controllers
 {
     public class ListeClientsController : Controller
     {
         private readonly GrandHotelDbContext _context;
 
+        //------------Instanciation du DbContext-------------------//
         public ListeClientsController(GrandHotelDbContext context)
         {
             _context = context;
         }
 
-        // GET: ListeClients
+        //----------------//- GET: ListeClients-------------------//
+        //--------- Action appelée depuis la vue Index------------//
+
+
+        //-----Recupération des données de la liste des clients (Id/Nom/Email/Reservation)---//
         public async Task<IActionResult> Index(int Id)
         {
             var clients = await _context.Client.Include("Reservation").ToListAsync();
@@ -30,16 +40,26 @@ namespace GrandHotel.Controllers
                 cli.ReservationEnCours = cli.Reservation.Where(r => r.Jour > DateTime.Today).Count();
             }
 
+            //--------------AFFICHAGE DE LA VUE------------------//
 
             return View(clients);
-
         }
 
+        //---- Action pour afficher clients selon leur 1ère lettre de nom-----//
         public async Task<IActionResult> ListByFirstLetter(char id)
         {
-            var client = await _context.Client.Include("Reservation").Where(c => c.Nom[0] == id).OrderBy(c => c.Nom).AsNoTracking().ToListAsync(); ;
+            var client = await _context.Client.Include("Reservation").Where(c => c.Nom[0] == id).OrderBy(c => c.Nom).AsNoTracking().ToListAsync();
+            foreach (Client cli in client)
+            {
+                cli.ReservationEnCours = cli.Reservation.Where(r => r.Jour > DateTime.Today).Count();
+            }
+
+            //--------------AFFICHAGE DE LA VUE------------------//
             return View("Index", client);
         }
+
+
+        //------------------------------------------PERSPECTIVES D'AMELIORATION POUR MODIFIER/AJOUTER/DETAIL DE CHAMBRES--------------------
 
         //public async Task<IActionResult> Reservation (bool EtatReservation)
         //{
@@ -171,7 +191,6 @@ namespace GrandHotel.Controllers
         //{
         //    return _context.Client.Any(e => e.Id == id);
         //}
-
-
+        //------------------------------------------PERSPECTIVES D'AMELIORATION POUR MODIFIER/AJOUTER/DETAIL DE CHAMBRES--------------------
     }
 }

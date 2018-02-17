@@ -52,6 +52,12 @@ namespace GrandHotel.Controllers
         {
             var user = await _user.GetUserAsync(User);
             @ViewBag.Email = user.Email;
+            var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
+            if(client!=null)
+            {
+                client.Tel = client.Telephone[0];
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
             return View();
         }
 
@@ -88,8 +94,10 @@ namespace GrandHotel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Telephone")] Client client)
         {
-            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
-            if (ModelState.IsValid && uniqueTel == null)
+            
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
+            var clientBase = _context.Client.Where(c => c.Email == client.Email).FirstOrDefault();
+            if (ModelState.IsValid && uniqueTel==null && clientBase==null )
             {
                 var user = await _user.GetUserAsync(User);
                 client.Email = user.Email;
@@ -109,8 +117,13 @@ namespace GrandHotel.Controllers
             {
                 ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
             }
-
-            return View(client);
+            if(clientBase!=null)
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            if(uniqueTel !=null)
+            {
+                ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            }
+            return View(client);         
         }
 
         // GET: Clients/Edit/5
@@ -199,8 +212,8 @@ namespace GrandHotel.Controllers
             {
                 _context.Telephone.Remove(tel);
             }
-
-
+           
+            
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
