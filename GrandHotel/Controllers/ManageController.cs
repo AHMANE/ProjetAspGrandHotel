@@ -13,13 +13,18 @@ using Microsoft.Extensions.Options;
 using GrandHotel.Models;
 using GrandHotel.Models.ManageViewModels;
 using GrandHotel.Services;
+using GrandHotel.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GrandHotel.Controllers
 {
+
+
     [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        private readonly GrandHotelDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -33,8 +38,11 @@ namespace GrandHotel.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder, GrandHotelDbContext context)
         {
+
+            _context = context;
+
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -127,6 +135,173 @@ namespace GrandHotel.Controllers
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Clients/Edit/5
+        public async Task<IActionResult> Edit()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var client = _context.Client.Include(a => a.Adresse).Include(t => t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
+            int? id = client.Id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Email = user.Email;
+            //   return RedirectToAction(nameof(Index));
+            return View(client);
+        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id, Civilite, Nom, Prenom, Email, CarteFidelite,Societe")] Client client)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    client.Email = user.Email;
+        //    if (id != client.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(client);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!ClientExists(client.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(client);
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id, Civilite, Nom, Prenom, Email, CarteFidelite, Societe, Adresse, Telephone")] Client client)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    client.Email = user.Email;
+        //    Telephone telVerif = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
+        //    if (telVerif != null)
+        //    {
+        //        if (telVerif.IdClient == client.Id)
+        //            telVerif = null;
+        //    }
+        //    if (id != client.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid && telVerif == null)
+        //    {
+        //        client.Telephone[0] = client.Tel;
+        //        if (client.Adresse.Rue == null || client.Adresse.Ville == null || client.Adresse.CodePostal == null)
+        //        {
+        //            client.Adresse.Rue = "non renseigné";
+        //            client.Adresse.CodePostal = "00000";
+        //            client.Adresse.Ville = "non renseigné";
+        //        }
+
+
+        //        try
+        //        {
+        //            _context.Update(client);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!ClientExists(client.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(client);
+        //}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Civilite, Nom, Email, Prenom, CarteFidelite, Societe, Adresse, Telephone")] Client client)
+        {
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
+            var user = await _userManager.GetUserAsync(User);
+            client.Email = user.Email;
+            var adresseToUpdate = _context.Adresse.Find(client.Id);
+
+            Telephone ancienNumero = _context.Telephone.Where(t => t.IdClient == client.Id).FirstOrDefault();
+           // Telephone telephoneToUpdate = _context.Telephone.Find(ancienNumero.Numero);
+
+            if (id != client.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid && uniqueTel==null)
+            {
+                if (client.Adresse.Rue == null || client.Adresse.Ville == null || client.Adresse.CodePostal == null)
+                {
+                    client.Adresse.Rue = "non renseigné";
+                    client.Adresse.CodePostal = "00000";
+                    client.Adresse.Ville = "non renseigné";
+                }
+
+                try
+                {                    
+                    _context.Client.Where(c => c.Id == client.Id).Include(t => t.Telephone).FirstOrDefault().Telephone.Add(client.Telephone[0]);
+           //         await _context.SaveChangesAsync();
+                    //////////////////
+                    _context.Telephone.Remove(ancienNumero);
+                    await _context.SaveChangesAsync();
+                    //////////////////
+                    adresseToUpdate.Rue = client.Adresse.Rue;
+                    adresseToUpdate.Ville = client.Adresse.Ville;
+                    adresseToUpdate.CodePostal = client.Adresse.CodePostal;
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(client.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            if (uniqueTel != null)
+            {
+                ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            }
+            return View(client);
+        }
+
+
+        private bool ClientExists(int id)
+        {
+            return _context.Client.Any(e => e.Id == id);
         }
 
         [HttpGet]

@@ -58,30 +58,58 @@ namespace GrandHotel.Controllers
         // POST: Clients/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
+        //{
+        //    var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
+        //    if (ModelState.IsValid && uniqueTel==null)
+        //    {
+        //        var user = await _user.GetUserAsync(User);
+        //        client.Email = user.Email;
+        //        client.Telephone.Add(client.Tel);
+        //        if(client.Adresse.Rue==null || client.Adresse.Ville==null || client.Adresse.CodePostal == null)
+        //        {
+        //            client.Adresse.Rue = "non renseigné";
+        //            client.Adresse.CodePostal = "00000";
+        //            client.Adresse.Ville = "non renseigné";
+        //        }
+        //        _context.Add(client);  
+
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(HomeController.Index),"Home");
+        //        //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
+        //        //return RedirectToAction(nameof(HomeController.Index), "Home");
+        //    }
+        //    ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+        //    return View(client);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
+        public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Telephone")] Client client)
         {
-            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
-            if (ModelState.IsValid && uniqueTel==null)
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
+            if (ModelState.IsValid && uniqueTel == null)
             {
                 var user = await _user.GetUserAsync(User);
                 client.Email = user.Email;
-                client.Telephone.Add(client.Tel);
-                if(client.Adresse.Rue==null || client.Adresse.Ville==null || client.Adresse.CodePostal == null)
+
+                if (client.Adresse.Rue == null || client.Adresse.Ville == null || client.Adresse.CodePostal == null)
                 {
                     client.Adresse.Rue = "non renseigné";
                     client.Adresse.CodePostal = "00000";
                     client.Adresse.Ville = "non renseigné";
                 }
-                _context.Add(client);  
-                
+                _context.Add(client);
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(HomeController.Index),"Home");
-                //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
-                //return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            if (uniqueTel != null)
+            {
+                ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            }
+
             return View(client);
         }
 
@@ -98,7 +126,8 @@ namespace GrandHotel.Controllers
             {
                 return NotFound();
             }
-            return View(client);
+            return View("Views/Manage/EditCoordonnees.cshtml", client);
+            //return View("Views/Manage/EditCoordonnees.cshtml", client);
         }
 
         // POST: Clients/Edit/5
@@ -166,12 +195,12 @@ namespace GrandHotel.Controllers
             //var adresse = await _context.Adresse.SingleOrDefaultAsync(m => m.IdClient == id);
             _context.Client.Remove(client);
             _context.Adresse.Remove(adresse);
-            foreach(var tel in listTel)
+            foreach (var tel in listTel)
             {
                 _context.Telephone.Remove(tel);
             }
-           
-            
+
+
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }

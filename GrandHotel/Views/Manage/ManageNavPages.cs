@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -15,6 +16,13 @@ namespace GrandHotel.Views.Manage
 
         public static string ChangePassword => "ChangePassword";
 
+
+        // ajout de l'option Consulter Vos Factures
+        public static string IndexFactures => "IndexFactures";
+        // ajout de l'option Modifier vos Coordonnes
+        public static string Edit => "Edit";
+
+
         public static string ExternalLogins => "ExternalLogins";
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
@@ -22,6 +30,13 @@ namespace GrandHotel.Views.Manage
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+
+
+        // ajout de l'option Consulter Vos Factures
+        public static string IndexFacturesNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexFactures);
+        // ajout de l'option Modifier vos Coordonnes
+        public static string EditCoordonneesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Edit);
+
 
         public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
 
