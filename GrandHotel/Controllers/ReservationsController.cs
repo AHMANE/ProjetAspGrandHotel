@@ -128,7 +128,7 @@ namespace GrandHotel.Controllers
                         }
                         ViewBag.rest = tvm.Reservations.Count;
                         ViewBag.NbPersonnes = NbPersonnes;
-                       
+
                     }
                    
                 }

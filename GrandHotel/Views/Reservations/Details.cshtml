@@ -12,7 +12,7 @@
         <h4>Reservation</h4>
         <hr />
         <table class="table">
-            <thead>
+            <thead class="alert-success">
                 <tr>
                     <th>
                         @Html.DisplayNameFor(model => model.First().Numero)
@@ -29,14 +29,14 @@
                     <th>
                         @Html.DisplayNameFor(model => model.First().PrixChambre)
                     </th>
-                    <th>
+                    <th class="alert-danger">
                         @Html.DisplayNameFor(model => model.First().PrixTotal)
                     </th>
 
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="alert-info">
 
                 @foreach (var item in Model)
                 {
@@ -59,12 +59,12 @@
 
                             @Html.DisplayFor(modelItem => item.PrixChambre)
                         </td>
-                        <td>
+                        <td class="alert-danger">
 
                             @Html.DisplayFor(modelItem => item.PrixTotal)
                         </td>
                         <td>
-                            <a asp-controller="Reservations" asp-action="Create" asp-route-id="@item.Numero" asp-route-etage="@item.Etage" asp-route-Bain="@item.Bain" asp-route-NbLits="@item.NbLits" asp-route-PrixTotal="@item.PrixTotal" role="button"> Réserver<span class="btn btn-secondary glyphicon glyphicon-play "></span></a>
+                            <a asp-controller="Reservations" asp-action="Create" asp-route-id="@item.Numero" asp-route-etage="@item.Etage" asp-route-Bain="@item.Bain" asp-route-NbLits="@item.NbLits" asp-route-PrixTotal="@item.PrixTotal" role="button" class="btn btn-success"> Réserver<span class="btn btn-secondary glyphicon glyphicon-play "></span></a>
 
                         </td>
                     </tr>
