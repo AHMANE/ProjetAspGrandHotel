@@ -1,52 +1,87 @@
-﻿@model IEnumerable<GrandHotel.Models.Chambre>
+﻿ @*CODE DE NIRY RALISON*@
 
-@{
-    ViewData["Title"] = "Liste des chambres";
-}
+@* -----------------------------------VUE LISTECHAMBRES------------------------------- *@
 
-<h2>Liste des chambres</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Numero)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Prix)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disponibilite)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-    {
-        <tr>
-            <th>
-                @Html.DisplayFor(model => item.Numero)
-            </th>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Prix)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disponibilite)
-            </td>
+@model IEnumerable<GrandHotel.Models.Chambre>
 
 
+<div class="col-sm-12">
 
-            @*<td>
+    @*------------------------------Affichage du titre----------------------------------*@
+
+    @{
+        ViewData["Title"] = "Liste des chambres";
+    }
+
+    <h2>Liste des chambres</h2>
+
+    @*-------------------------Filtrage selon disponibilité-----------------------------*@
+
+    <form asp-controller="ListeChambres" asp-action="Index">
+        <p>
+            <Label>Liste des chambres suivant disponibilités </Label>
+            <br/>
+            <select name="etat" asp-items="@{new SelectList(ViewBag.Etats,
+                            "Key", "Value", ViewBag.EtatSelec)}"></select>
+            <input type="submit" value="Filtrer" />
+        </p>
+    </form>
+
+    @*------------------------Affichage des titres des colonnes---------------------------*@
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Numero)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Prix)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Disponibilite)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+
+    @*---------------------Affichage des données des colonnes-------------------------------*@
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+            <tr>
+                <th>
+                    @Html.DisplayFor(model => item.Numero)
+                </th>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prix)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Disponibilite)
+                </td>
+
+
+   @*-------PERSPECTIVE D'AMELIORATION POUR MODIFIER/AJOUTER/DETAIL DE CHAMBRES------------*@
+
+                @*<td>
             <a asp-action="Edit" asp-route-id="@item.Numero">Edit</a> |
             <a asp-action="Details" asp-route-id="@item.Numero">Details</a> |
             <a asp-action="Delete" asp-route-id="@item.Numero">Delete</a>
         </td>*@
-        </tr>
-}
-    </tbody>
-</table>
-        <a asp-controller="GestionInterne" asp-action="Index"><strong>Retour à la page Gestion Interne</strong></a>
+    @* ------------------------------------------------------------------------------------ *@
+
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    @*----------------Lien pour retourner à la page de Gestion Interne-----------------------*@
+
+
+    <a asp-controller="GestionInterne" asp-action="Index"><strong>Retour à la page Gestion Interne</strong></a>
+
+</div>

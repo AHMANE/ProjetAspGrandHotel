@@ -1,4 +1,6 @@
-﻿using System;
+﻿//CODE DE NIRY RALISON//
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,51 +11,206 @@ using GrandHotel.Data;
 using GrandHotel.Models;
 using System.Data.SqlClient;
 
+//--------------------------------------------------CONTROLLER LISTECHAMBRES----------------------------------------//
+
 namespace GrandHotel.Controllers
 {
     public class ListeChambresController : Controller
     {
         private readonly GrandHotelDbContext _context;
+        
 
+        //------------Instanciation du DbContext-------------------//
         public ListeChambresController(GrandHotelDbContext context)
         {
             _context = context;
         }
 
-        // GET: ListeChambres
-        public async Task<IActionResult> Index()
+        //----------------- GET: ListeChambres--------------------//
+        //--------- Action appelée depuis la vue Index------------//
+
+
+        public async Task<IActionResult> Index(int etat)
+        //------------Filtrage selon disponibilité-----------------//
         {
-            var listChambres = new List<Chambre>();
-
-            string req = @"select C.Numero,T.Prix, R.Jour
-from Reservation R 
-inner join Chambre C  on (R.NumChambre=C.Numero)
-inner join TarifChambre Tc on Tc.NumChambre = C.Numero
-inner join Tarif T on T.Code = Tc.CodeTarif
-where Jour=cast(GETDATE() as date) and year(T.DateDebut)=year(GETDATE())";
-
-            using (var conn = (SqlConnection)_context.Database.GetDbConnection())
+            ViewBag.Etats = new Dictionary<int, string>()
             {
-                var cmd = new SqlCommand(req, conn);
-                await conn.OpenAsync();
+                { 0, "Toutes" },
+                { -1, "Occupées" },
+                { 1, "Disponibles" }
+            };
 
-                using (var sdr = await cmd.ExecuteReaderAsync())
+            //----- Mémorisation de valeurs de filtres saisies------//
+            ViewBag.EtatSelec = etat;
+            var listChambres = new List<Chambre>();
+            var listeDeschambresTotal = _context.Chambre.Include(c => c.TarifChambre).ThenInclude(t => t.CodeTarifNavigation).ToList();
+
+            //---------Liste de toutes les chambres version1----------------//
+            //if (etat == 0)
+            //{
+            //    string req = @"select TF.NumChambre, T.Prix 
+            //                from Tarif T inner join TarifChambre TF on (T.Code=TF.CodeTarif)
+            //                where year(T.DateDebut)=year(GETDATE())";
+
+            //    using (var conn = (SqlConnection)_context.Database.GetDbConnection())
+            //    {
+            //        var cmd = new SqlCommand(req, conn);
+            //        await conn.OpenAsync();
+
+            //        using (var sdr = await cmd.ExecuteReaderAsync())
+            //        {
+            //            while (sdr.Read())
+            //            {
+            //                var c = new Chambre();
+            //                c.Numero = (short)sdr["NumChambre"];
+            //                c.Prix = (decimal)sdr["Prix"];
+
+            //                listChambres.Add(c);
+            //            }
+            //        }
+            //    }
+
+            //    foreach (Chambre c in listChambres)
+            //    {
+            //        c.Disponibilite = "Voir filtrage";
+            //    }
+            //}
+
+            //---------Liste de toutes les chambres version2----------------//
+            if (etat == 0)
+            {
+                bool hasChambre = false;
+                //--------------Requete pour Recuperer toute les chambre occupé--------//
+                string req = @"select C.Numero,T.Prix
+                               from Reservation R 
+                               inner join Chambre C  on (R.NumChambre=C.Numero)
+                               inner join TarifChambre Tc on Tc.NumChambre = C.Numero
+                               inner join Tarif T on T.Code = Tc.CodeTarif
+                               where Jour=cast(GETDATE() as date) and year(T.DateDebut)=year(GETDATE())";
+
+                using (var conn = (SqlConnection)_context.Database.GetDbConnection())
                 {
-                    while (sdr.Read())
-                    {
-                        var c = new Chambre();
-                        c.Numero = (short)sdr["Numero"];
-                        c.Prix = (decimal)sdr["Prix"];
-                        c.Disponibilite= (DateTime)sdr["Jour"];
+                    var cmd = new SqlCommand(req, conn);
+                    await conn.OpenAsync();
 
-                        listChambres.Add(c);
+                    using (var sdr = await cmd.ExecuteReaderAsync())
+                    {
+                        while (sdr.Read())
+                        {
+                            var c = new Chambre();
+                            c.Numero = (short)sdr["Numero"];
+                            c.Prix = (decimal)sdr["Prix"];
+
+                            listChambres.Add(c);
+                        }
                     }
                 }
+                foreach (Chambre c in listChambres)
+                {
+                    c.Disponibilite = "Occupée";
+                }
+                //--------Parcourir Toute les chambre de l'hotel et verifier si elles appartiennent à liste des chambres occupé---////
+                foreach(Chambre c in listeDeschambresTotal)
+                {
+                    foreach(Chambre ocupe in listChambres)
+                    {
+                        if(c.Numero==ocupe.Numero)
+                        {
+                            hasChambre = true || hasChambre;
+                        }                        
+                    }
+                    if(!hasChambre)
+                    {
+                        c.Disponibilite = "Disponible";
+                        c.Prix = c.TarifChambre.Where(d => d.CodeTarifNavigation.DateDebut.Year == DateTime.Today.Year).FirstOrDefault().CodeTarifNavigation.Prix;
+                        listChambres.Add(c);
+                    }
+                    hasChambre = false;
+                    
+                }
             }
+
+
+            //------------Liste des chambres occupées------------//
+
+            if (etat == -1)
+            {
+                string req = @"select C.Numero,T.Prix
+                               from Reservation R 
+                               inner join Chambre C  on (R.NumChambre=C.Numero)
+                               inner join TarifChambre Tc on Tc.NumChambre = C.Numero
+                               inner join Tarif T on T.Code = Tc.CodeTarif
+                               where Jour=cast(GETDATE() as date) and year(T.DateDebut)=year(GETDATE())";
+
+                using (var conn = (SqlConnection)_context.Database.GetDbConnection())
+                {
+                    var cmd = new SqlCommand(req, conn);
+                    await conn.OpenAsync();
+
+                    using (var sdr = await cmd.ExecuteReaderAsync())
+                    {
+                        while (sdr.Read())
+                        {
+                            var c = new Chambre();
+                            c.Numero = (short)sdr["Numero"];
+                            c.Prix = (decimal)sdr["Prix"];
+
+                            listChambres.Add(c);
+                        }
+                    }
+                }
+                foreach (Chambre c in listChambres)
+                {
+                    c.Disponibilite = "Occupée";
+                }
+            }
+
+            //------------Liste des chambres disponibles-----------//
+
+            if (etat == 1)
+            {
+                string req = @"select TF.NumChambre, T.Prix 
+                            from Tarif T inner join TarifChambre TF on (T.Code=TF.CodeTarif)
+                            where year(T.DateDebut)=year(GETDATE())
+                            except
+                            select C.Numero,T.Prix
+                            from Reservation R 
+                            inner join Chambre C  on (R.NumChambre=C.Numero)
+                            inner join TarifChambre Tc on Tc.NumChambre = C.Numero
+                            inner join Tarif T on T.Code = Tc.CodeTarif
+                            where Jour=cast(GETDATE() as date) and year(T.DateDebut)=year(GETDATE())";
+
+                using (var conn = (SqlConnection)_context.Database.GetDbConnection())
+                {
+                    var cmd = new SqlCommand(req, conn);
+                    await conn.OpenAsync();
+
+                    using (var sdr = await cmd.ExecuteReaderAsync())
+                    {
+                        while (sdr.Read())
+                        {
+                            var c = new Chambre();
+                            c.Numero = (short)sdr["NumChambre"];
+                            c.Prix = (decimal)sdr["Prix"];
+
+                            listChambres.Add(c);
+                        }
+                    }
+                }
+
+                foreach (Chambre c in listChambres)
+                {
+                    c.Disponibilite = "Disponible";
+                }
+            }
+
+            //--------------AFFICHAGE DE LA VUE------------------------//
 
             return View(listChambres);
         }
 
+
+        //------------------------------------------PERSPECTIVES D'AMELIORATION POUR MODIFIER/AJOUTER/DETAIL DE CHAMBRES--------------------
 
         // GET: ListeChambres/Details/5
         //public async Task<IActionResult> Details(short? id)
@@ -179,5 +336,7 @@ where Jour=cast(GETDATE() as date) and year(T.DateDebut)=year(GETDATE())";
         //{
         //    return _context.Chambre.Any(e => e.Numero == id);
         //}
+        //------------------------------------------PERSPECTIVE D'AMELIORATION POUR MODIFIER/AJOUTER/DETAIL DE CHAMBRES--------------------
+
     }
 }
