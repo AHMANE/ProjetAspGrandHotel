@@ -33,7 +33,7 @@ namespace GrandHotel.Models
         public decimal Prix { get; set; }
 
         [NotMapped]
-        [Display(Name = "Non disponible")]
-        public DateTime Disponibilite { get; set; }
+        [Display(Name = "Disponibilité")]
+        public string Disponibilite { get; set; }
     }
 }

@@ -27,13 +27,13 @@ namespace GrandHotel.Models
         public Adresse Adresse { get; set; }
         public ICollection<Facture> Facture { get; set; }
 
-        [Display(Name = "Reservations")]
+        [Display(Name = "Total des réservations")]
         public ICollection<Reservation> Reservation { get; set; }
-        public ICollection<Telephone> Telephone { get; set; }
+        public IList<Telephone> Telephone { get; set; }
 
         [NotMapped]
-        [Display(Name = "Reservations en cours")]
+        [Display(Name = "Nombre de réservations en cours")]
         public int ReservationEnCours{ get; set; }
-        public IList<Telephone> Telephone { get; set; }
+        
     }
 }
