@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Outils.TConsole
+namespace GH_API_Client
 {
 	public enum Formats { MarkDown, Alternative, Minimal }
 

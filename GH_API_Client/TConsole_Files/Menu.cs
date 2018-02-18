@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Outils.TConsole
+namespace GH_API_Client
 {
     /// <summary>
     /// Modélise un menu à afficher dans la console

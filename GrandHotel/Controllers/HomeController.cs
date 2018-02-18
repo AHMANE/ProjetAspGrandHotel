@@ -36,8 +36,8 @@ namespace GrandHotel.Controllers
 
         public FileResult Download()
         {
-            string fileName = "Appli_Cliente.exe";
-            byte[] fileBytes = System.IO.File.ReadAllBytes($"wwwroot/Appli_Cliente/GH_API_Client.exe");
+            string fileName = "DossierAppli.rar";
+            byte[] fileBytes = System.IO.File.ReadAllBytes($"wwwroot/Appli_Cliente/DossierAppli.rar");
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 

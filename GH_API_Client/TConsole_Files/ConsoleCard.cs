@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 
-namespace Outils.TConsole
+namespace GH_API_Client
 {
     /// <summary>
     /// Classe permettant d'afficher dans la console des données
