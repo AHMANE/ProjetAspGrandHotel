@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GrandHotel.Controllers
 {
-    public class ReservationsController : Controller
+    public class ReservationsController : Controller, IDataReservation
     {
         private readonly GrandHotelDbContext _context;
         private readonly UserManager<ApplicationUser> _user;
