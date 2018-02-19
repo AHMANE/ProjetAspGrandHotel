@@ -29,14 +29,15 @@ namespace GrandHotel.Controllers
         {
             if (!annee.HasValue)
                 annee = DateTime.Today.Year;
+            //Recuperation de l'utilisateur connecté
             var user = await _user.GetUserAsync(User);
-            
+            //Recherche du client correspondant au mail de l'utilisateur connecté
             var client= _context.Client.Where(c => c.Email == user.Email).FirstOrDefault();
             if(client==null)
             {
                 return NotFound();
             }
-            
+            //Recuperation des factures correspondant à l'annee séléctionner
             var grandHotelDbContext = _context.Facture.OrderByDescending(s=>s.DateFacture).Include(f => f.CodeModePaiementNavigation).Include(f => f.IdClientNavigation).Where(f=>f.IdClient== client.Id && f.DateFacture.Year==annee);
             return View(await grandHotelDbContext.ToListAsync());
         }
