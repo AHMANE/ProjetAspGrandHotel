@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    background-color: rgba(255,0,200,0.1);
 }
 
 /* Wrapping element */
@@ -8,6 +9,7 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    
 }
 
 /* Carousel */
@@ -41,11 +43,15 @@
     cursor: progress;
 }
 
-    .has-spinner.active .spinner {
+ .has-spinner.active .spinner {
         opacity: 1;
         width: auto;
     }
 
 .has-spinner.btn.active .spinner {
     min-width: 20px;
+}
+#FormContact {
+    background-image: url('../images/images.jpg');
+    background-image: url('../images/contact.jpg');
 }

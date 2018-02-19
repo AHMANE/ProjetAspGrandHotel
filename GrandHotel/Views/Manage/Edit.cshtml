@@ -7,7 +7,7 @@
 <h4>@ViewData["Title"]</h4>
 @*@Html.Partial("_StatusMessage", Model.StatusMessage)*@
 <div class="row">
-    <div class="col-md-6">
+    <div class=" col-md-6">
         <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -17,6 +17,7 @@
             <div class="form-group">
                 <input asp-for="Nom" class="form-control" type="hidden" />
             </div>
+
             <div class="form-group">
                 <input asp-for="Prenom" class="form-control" type="hidden" />
             </div>
