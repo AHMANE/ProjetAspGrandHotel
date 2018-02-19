@@ -227,6 +227,7 @@ namespace GrandHotel.Controllers
             ViewBag.Etage = ch[0].Etage;
             ViewBag.NbLits = ch[0].NbLits;
             ViewBag.PrixTotal = ch[0].PrixTotal;
+            HttpContext.Session.Clear();
             return View();
         }
 

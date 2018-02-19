@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using GrandHotel.Data;
 using GrandHotel.Models;
 using Microsoft.AspNetCore.Identity;
+using GrandHotel.Extensions;
+using Microsoft.AspNetCore.Routing;
 
 namespace GrandHotel.Controllers
 {
@@ -48,15 +50,24 @@ namespace GrandHotel.Controllers
         }
 
         // GET: Clients/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             var user = await _user.GetUserAsync(User);
             @ViewBag.Email = user.Email;
+            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+            var chambre = HttpContext.Session.GetObjectFromJson<List<Chambre>>("Cham");
             var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
             if(client!=null)
             {
                 client.Tel = client.Telephone[0];
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                if(reservations==null && chambre==null)
+                    return RedirectToAction(nameof(ManageController.Index), "Manage");
+        
+                short idChambre = chambre.Last().Numero;
+                return RedirectToAction("Create","Reservations",new { id = idChambre } );
+
+
             }
             return View();
         }
@@ -94,9 +105,14 @@ namespace GrandHotel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Telephone")] Client client)
         {
+
             
             var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
             var clientBase = _context.Client.Where(c => c.Email == client.Email).FirstOrDefault();
+
+            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+            var chambre = HttpContext.Session.GetObjectFromJson<List<Chambre>>("Cham");
+           
             if (ModelState.IsValid && uniqueTel==null && clientBase==null )
             {
                 var user = await _user.GetUserAsync(User);
@@ -111,8 +127,10 @@ namespace GrandHotel.Controllers
                 _context.Add(client);
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ManageController.Index), "Manage");
-                //return RedirectToAction(nameof(HomeController.Index), "Home");
+                if(reservations==null && chambre==null)
+                    return RedirectToAction(nameof(ManageController.Index), "Manage");
+                short idChambre = chambre.Last().Numero;
+                return RedirectToAction("Create", "Reservations", new { id = idChambre });
             }
             if (uniqueTel != null)
             {
