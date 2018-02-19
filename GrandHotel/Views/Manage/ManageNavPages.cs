@@ -21,6 +21,8 @@ namespace GrandHotel.Views.Manage
         public static string IndexFactures => "IndexFactures";
         // ajout de l'option Modifier vos Coordonnes
         public static string Edit => "Edit";
+        // ajout de l'option Ajouter Telephones
+        public static string AddTelephones => "AddTelephones";
 
 
         public static string ExternalLogins => "ExternalLogins";
@@ -36,6 +38,8 @@ namespace GrandHotel.Views.Manage
         public static string IndexFacturesNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexFactures);
         // ajout de l'option Modifier vos Coordonnes
         public static string EditCoordonneesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Edit);
+        // ajout de l'option Ajouter Telephones
+        public static string AddTelephonesNavClass(ViewContext viewContext) => PageNavClass(viewContext, AddTelephones);
 
 
         public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);

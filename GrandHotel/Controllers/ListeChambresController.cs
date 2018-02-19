@@ -128,6 +128,7 @@ namespace GrandHotel.Controllers
                     hasChambre = false;
                     
                 }
+                listChambres = listChambres.OrderBy(c => c.Numero).ToList();
             }
 
 

@@ -16,7 +16,7 @@ namespace GH_API_Web.Models
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<Calendrier> Calendrier { get; set; }
         public virtual DbSet<Chambre> Chambre { get; set; }
-        public virtual DbSet<Client> Client { get; set; }
+        public virtual DbSet<ClientVM> Client { get; set; }
         public virtual DbSet<Facture> Facture { get; set; }
         public virtual DbSet<LigneFacture> LigneFacture { get; set; }
         public virtual DbSet<ModePaiement> ModePaiement { get; set; }
@@ -172,7 +172,7 @@ namespace GH_API_Web.Models
                     .HasDefaultValueSql("((1))");
             });
 
-            modelBuilder.Entity<Client>(entity =>
+            modelBuilder.Entity<ClientVM>(entity =>
             {
                 entity.Property(e => e.Civilite)
                     .IsRequired()

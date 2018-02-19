@@ -111,15 +111,17 @@ namespace GrandHotel.Controllers
                 _context.Add(client);
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(ManageController.Index), "Manage");
+                //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
             if (uniqueTel != null)
             {
                 ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
             }
             if(clientBase!=null)
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            if(uniqueTel !=null)
+                return RedirectToAction(nameof(ManageController.Index), "Manage");
+            //return RedirectToAction(nameof(HomeController.Index), "Home");
+            if (uniqueTel !=null)
             {
                 ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
             }

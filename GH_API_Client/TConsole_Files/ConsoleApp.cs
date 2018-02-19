@@ -1,9 +1,10 @@
-﻿using System;
+﻿using GH_API_Client;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Outils.TConsole
+namespace GH_API_Cliente
 {
 	/// <summary>
 	/// Modélise une application console avec des pages et une navigation entre les pages

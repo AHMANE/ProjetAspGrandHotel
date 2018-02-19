@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Outils.TConsole
+namespace GH_API_Client
 {
     /// <summary>
     /// Classe offrant des méthodes d'affichage en mode console

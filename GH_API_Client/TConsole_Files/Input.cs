@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Outils.TConsole
+namespace GH_API_Client
 {
     /// <summary>
     /// Classe offrant des méthodes de saisie en mode console

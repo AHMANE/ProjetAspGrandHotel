@@ -13,10 +13,11 @@ namespace GrandHotel.Models.AccountViewModels
         public string Email { get; set; }
 
         [Required]
+        [Display(Name = "Mot de Passe")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Se Souvenir de moi?")]
         public bool RememberMe { get; set; }
     }
 }

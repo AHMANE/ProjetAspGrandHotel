@@ -8,12 +8,12 @@
     <li class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-action="Index">Votre Profil</a></li>
     <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a asp-action="ChangePassword">Modifier votre Password</a></li>
     <li class="@ManageNavPages.EditCoordonneesNavClass(ViewContext)"><a asp-action="Edit">Modifier vos Coordonnées</a></li>
+    <li class="@ManageNavPages.AddTelephonesNavClass(ViewContext)"><a asp-action="AddTelephones">Ajouter un Telephone</a></li>
     <li class="@ManageNavPages.IndexFacturesNavClass(ViewContext)"><a asp-action="Index" asp-controller="ListeFactures">Consulter vos Factures</a></li>
-    @if (hasExternalLogins)
-    {
-        <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a asp-action="ExternalLogins">External logins</a></li>
-    }
-    <li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li><a asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>
+    @*@if (hasExternalLogins)
+        {
+            <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a asp-action="ExternalLogins">External logins</a></li>
+        }
+        <li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>*@
 </ul>
 

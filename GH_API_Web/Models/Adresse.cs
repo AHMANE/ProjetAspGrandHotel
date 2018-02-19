@@ -11,6 +11,6 @@ namespace GH_API_Web.Models
         public string CodePostal { get; set; }
         public string Ville { get; set; }
 
-        public Client IdClientNavigation { get; set; }
+        public ClientVM IdClientNavigation { get; set; }
     }
 }

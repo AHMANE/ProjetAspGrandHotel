@@ -1,0 +1,162 @@
+﻿@model GrandHotel.Models.ClientVM
+@{
+    ViewData["Title"] = "Ajouter vos Téléphones";
+    ViewData.AddActivePage(ManageNavPages.AddTelephones);
+}
+
+<h4>@ViewData["Title"]</h4>
+@*@Html.Partial("_StatusMessage", Model.StatusMessage)*@
+<div class="row">
+    <div class="col-md-6">
+        @{
+            if (Model.Client_TelPlus.Telephone.Count() == 1)
+            {
+                <h3>Votre Telephone actuel :</h3>
+                @*<div class="form-group">
+                        <label asp-for="Client_TelPlus.Telephone[0].Numero"></label>
+                        <input asp-for="Client_TelPlus.Telephone[0].Numero" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Client_TelPlus.Telephone[0].CodeType"></label>
+                        <input asp-for="Client_TelPlus.Telephone[0].CodeType" class="form-control" disabled />
+                    </div>
+                    <div>
+                        <label asp-for="Client_TelPlus.Telephone[0].Pro" class="control-label"></label>
+                        <input asp-for="Client_TelPlus.Telephone[0].Pro" class="form-control" disabled>
+                    </div>*@
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].Numero)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].CodeType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].Pro)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Client_TelPlus.Telephone)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Numero)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CodeType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Pro)
+                                </td>
+                                <td>
+                                    @*<a asp-action="DeleteTelephone" asp-route-id="@item.Numero">Supprimer ce Numéro</a>*@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            }
+
+            else
+            {
+                <h3>Vos Telephones actuels :</h3>
+                @*foreach (Telephone t in Model.Client_TelPlus.Telephone)
+                    {
+                        <div class="form-group">
+                            <label>Numero</label>
+                            <input value="@t.Numero" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label>Code Type</label>
+                            <input value="@t.CodeType" disabled />
+                        </div>
+                        <div>
+                            <label>Professionnel</label>
+                            <input value="@t.Pro" disabled />
+                        </div>
+                    }*@
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].Numero)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].CodeType)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Client_TelPlus.Telephone[0].Pro)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Client_TelPlus.Telephone)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Numero)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CodeType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Pro)
+                                </td>
+                                <td>
+                                    <a asp-action="DeleteTelephone" asp-route-id="@item.Numero">Supprimer ce Numéro</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            }
+        }
+        <h3>Ajouter un Telephone :</h3>
+        <form asp-action="AddTelephones" method="post">
+
+            <input type="hidden" asp-for="Client_TelPlus.Id" />
+            <input asp-for="Client_TelPlus.Nom" class="form-control" type="hidden" />
+            <input asp-for="Client_TelPlus.Prenom" class="form-control" type="hidden" />
+            <input asp-for="Client_TelPlus.Email" class="form-control" value=@ViewBag.Email disabled="disabled" type="hidden" />
+
+            <div class="form-group">
+                @*<label asp-for="TelephonePlus.Numero"></label>*@
+                <input asp-for="TelephonePlus.Numero" class="form-control" />
+                <span class="text-danger">@ViewBag.ErreurTelephone</span>
+                <span asp-validation-for="TelephonePlus.Numero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TelephonePlus.CodeType"></label>
+                <select asp-for="TelephonePlus.CodeType" class="form-control">
+                    <option value='M'>Mobile</option>
+                    <option value='F'>Fixe</option>
+                </select>
+                <span asp-validation-for="TelephonePlus.CodeType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="TelephonePlus.Pro" /> <span>Numero professionnel</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

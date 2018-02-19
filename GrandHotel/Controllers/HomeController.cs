@@ -33,5 +33,14 @@ namespace GrandHotel.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public FileResult Download()
+        {
+            string fileName = "DossierAppli.rar";
+            byte[] fileBytes = System.IO.File.ReadAllBytes($"wwwroot/Appli_Cliente/DossierAppli.rar");
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+
     }
 }

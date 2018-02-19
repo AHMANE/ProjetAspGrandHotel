@@ -1,5 +1,4 @@
-﻿using Outils.TConsole;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,6 +21,8 @@ namespace GH_API_Client.Pages
 
         private void SupprimerClient()
         {
+            Console.WriteLine("Cette Application ne peut supprimer que des objets de Classe Client qui n'ont pas de connection aux autres Tables (Facture, Adresse, Telephone, Reservation) de la BDD.\n");
+            Console.WriteLine("Veuillez de préférence ne supprimer qu'un client créé depuis cette application.\n");
             Output.WriteLine("Vous allez supprimer un client, quel est son Id ? ");
             int idClientToDelete = Input.Read<int>("Id Client : ");
 
@@ -34,8 +35,8 @@ namespace GH_API_Client.Pages
 
                 Client clientDeleted = DeleteClientAsync(idClientToDelete).Result;
 
-                Console.WriteLine($"Client supprimé : Id {clientDeleted.Id} - {clientDeleted.Civilite} {clientDeleted.Nom}");
-                Console.WriteLine("\n");
+                Console.WriteLine($"Client supprimé : Id {clientDeleted.Id} - {clientDeleted.Civilite} {clientDeleted.Nom}\n");
+
                 //var statusCode = DeleteClientAsync(idClientToDelete);
                 //Console.WriteLine($"Client supprimé (statut HTTP = {statusCode})");
 

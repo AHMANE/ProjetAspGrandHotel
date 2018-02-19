@@ -17,7 +17,7 @@ namespace GH_API_Web.Models
         public string CodeModePaiement { get; set; }
 
         public ModePaiement CodeModePaiementNavigation { get; set; }
-        public Client IdClientNavigation { get; set; }
+        public ClientVM IdClientNavigation { get; set; }
         public ICollection<LigneFacture> LigneFacture { get; set; }
     }
 }
