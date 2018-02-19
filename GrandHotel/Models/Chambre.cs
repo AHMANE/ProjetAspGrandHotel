@@ -21,11 +21,11 @@ namespace GrandHotel.Models
         [Display(Name = "Nombre de lit")]
         public byte NbLits { get; set; }
         public short? NumTel { get; set; }
-        [Display(Name = "prix de la chmabre")]
+        [Display(Name = "Prix de la chambre")]
         [NotMapped]
         public decimal PrixChambre { get; set; }
         [DisplayFormat(DataFormatString = "{0:C0}")]
-        [Display(Name = "prix Total du séjour (€)")]
+        [Display(Name = "Prix Total du séjour (€)")]
         [NotMapped]
         public decimal PrixTotal { get; set; }
         public ICollection<Reservation> Reservation { get; set; }

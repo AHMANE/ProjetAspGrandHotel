@@ -14,7 +14,7 @@ namespace GrandHotel.Models
         [DisplayFormat(DataFormatString = "{dd/MM/yyyy}")]
         public DateTime Jour { get; set; }
         public int IdClient { get; set; }
-        [Display(Name = "Nombre de perssonnes ")]
+        [Display(Name = "Nombre de personnes ")]
         public byte NbPersonnes { get; set; }
         public byte HeureArrivee { get; set; }
         public bool? Travail { get; set; }

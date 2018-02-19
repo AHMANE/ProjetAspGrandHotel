@@ -1,4 +1,6 @@
 ﻿using System;
+using GrandHotel.Controllers;
+using GrandHotel.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestGrandHotel
@@ -9,23 +11,23 @@ namespace TestGrandHotel
         private static IDataReservation _dataReservation;
 
         [ClassInitialize]
-        public static void InitClass(TestContext context)
-        {
-            _dataReservation = new ReservationsController();
-        }
+        //public static void InitClass(TestContext context)
+        //{
+        //    _dataReservation = new ReservationsController();
+        //}
 
-        [TestMethod]
-        public void Index()
-        {
-            int IdClient = 200;
-            Reservation res = new Reservation
-            {
-                JourDebutSejour = 19 / 02 / 2018,
-                NbPersonnes = 3,
-                HeureArrivee = 19
-            };
-            _dataReservation.Edit();
-        }
+        //[TestMethod]
+        //public void Index()
+        //{
+        //    int IdClient = 200;
+        //    Reservation res = new Reservation
+        //    {
+        //        JourDebutSejour = 19 / 02 / 2018,
+        //        NbPersonnes = 3,
+        //        HeureArrivee = 19
+        //    };
+        //    _dataReservation.Index();
+        //}
 
         [TestMethod]
         public void VéficationDisponi()

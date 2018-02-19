@@ -80,7 +80,7 @@ namespace GrandHotel.Controllers
             if (etat == 0)
             {
                 bool hasChambre = false;
-                //--------------Requete pour Recuperer toute les chambre occupé--------//
+                //--------------Requête pour recuperer toutes les chambres occupées--------//
                 string req = @"select C.Numero,T.Prix
                                from Reservation R 
                                inner join Chambre C  on (R.NumChambre=C.Numero)
@@ -109,12 +109,12 @@ namespace GrandHotel.Controllers
                 {
                     c.Disponibilite = "Occupée";
                 }
-                //--------Parcourir Toute les chambre de l'hotel et verifier si elles appartiennent à liste des chambres occupé---////
+                //--------Parcourir toutes les chambres de l'hotel et verifier si elles appartiennent à liste des chambres occupées---//
                 foreach(Chambre c in listeDeschambresTotal)
                 {
-                    foreach(Chambre ocupe in listChambres)
+                    foreach(Chambre occupe in listChambres)
                     {
-                        if(c.Numero==ocupe.Numero)
+                        if(c.Numero==occupe.Numero)
                         {
                             hasChambre = true || hasChambre;
                         }                        

@@ -55,13 +55,14 @@ namespace GrandHotel.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             var user = await _user.GetUserAsync(User);
             @ViewBag.Email = user.Email;
-            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+            //Récupération de la session chambre
             var chambre = HttpContext.Session.GetObjectFromJson<List<Chambre>>("Cham");
             var client = _context.Client.Include(a=>a.Adresse).Include(t=>t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
-            if(client!=null)
+            //Vérifie si le client existe 
+            if (client!=null)
             {
-                client.Tel = client.Telephone[0];
-                if(reservations==null && chambre==null)
+                
+                if(chambre==null)
                     return RedirectToAction(nameof(ManageController.Index), "Manage");
         
                 short idChambre = chambre.Last().Numero;
@@ -69,38 +70,11 @@ namespace GrandHotel.Controllers
 
 
             }
+            //redirection vers le formulaire d'inscription si l'utilisateur n'est pas encore enregistré en tant que client
             return View();
         }
 
-        // POST: Clients/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Tel")] Client client)
-        //{
-        //    var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Tel.Numero).FirstOrDefault();
-        //    if (ModelState.IsValid && uniqueTel==null)
-        //    {
-        //        var user = await _user.GetUserAsync(User);
-        //        client.Email = user.Email;
-        //        client.Telephone.Add(client.Tel);
-        //        if(client.Adresse.Rue==null || client.Adresse.Ville==null || client.Adresse.CodePostal == null)
-        //        {
-        //            client.Adresse.Rue = "non renseigné";
-        //            client.Adresse.CodePostal = "00000";
-        //            client.Adresse.Ville = "non renseigné";
-        //        }
-        //        _context.Add(client);  
-
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(HomeController.Index),"Home");
-        //        //return RedirectToAction(nameof(ClientsController.Edit),client.Id);
-        //        //return RedirectToAction(nameof(HomeController.Index), "Home");
-        //    }
-        //    ViewBag.ErreurTelephone = "le numero " + client.Tel.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
-        //    return View(client);
-        //}
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Civilite,Nom,Prenom,Email,CarteFidelite,Societe,Adresse,Telephone")] Client client)
@@ -110,7 +84,7 @@ namespace GrandHotel.Controllers
             var uniqueTel = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
             var clientBase = _context.Client.Where(c => c.Email == client.Email).FirstOrDefault();
 
-            var reservations = HttpContext.Session.GetObjectFromJson<List<ReserVationSession>>("Resa");
+            
             var chambre = HttpContext.Session.GetObjectFromJson<List<Chambre>>("Cham");
            
             if (ModelState.IsValid && uniqueTel==null && clientBase==null )
@@ -127,8 +101,9 @@ namespace GrandHotel.Controllers
                 _context.Add(client);
 
                 await _context.SaveChangesAsync();
-                if(reservations==null && chambre==null)
+                if(chambre==null)
                     return RedirectToAction(nameof(ManageController.Index), "Manage");
+                //Récuperation du numero de chambre à Reserver et redirection vers le récapitulatif de la commande
                 short idChambre = chambre.Last().Numero;
                 return RedirectToAction("Create", "Reservations", new { id = idChambre });
             }
@@ -138,7 +113,7 @@ namespace GrandHotel.Controllers
             }
             if(clientBase!=null)
                 return RedirectToAction(nameof(ManageController.Index), "Manage");
-            //return RedirectToAction(nameof(HomeController.Index), "Home");
+            
             if (uniqueTel !=null)
             {
                 ViewBag.ErreurTelephone = "le numero " + client.Telephone[0].Numero + " est déjà utilisé, veuillez en saisir un nouveau";
