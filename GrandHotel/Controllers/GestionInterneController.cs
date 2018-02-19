@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GrandHotel.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class GestionInterneController : Controller
     {
         public IActionResult Index()
