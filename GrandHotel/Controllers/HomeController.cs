@@ -60,12 +60,14 @@ namespace GrandHotel.Controllers
                     client.Disconnect(true);
 
                 }
-              
+
                 // var cont = contact.Email.Remove(0);
 
                 //ViewData["Message"] = "Your contact page.";
                 //
+
                 return View();
+                
             }
 
             return View(contact);

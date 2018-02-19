@@ -31,7 +31,6 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Accueil</a></li>
-                    <li><a asp-area="" asp-controller="GestionInterne" asp-action="Index">Gestion Interne</a></li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>*@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
@@ -43,7 +42,9 @@
         @RenderBody()
         <hr />
         <footer>
+
             <p>&copy; 2018 - GrandHotel</p>
+            <iframe src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&width=20px&layout=button_count&action=like&size=small&show_faces=true&share=true&height=46&appId" width="20px" height="46" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
         </footer>
     </div>
 
