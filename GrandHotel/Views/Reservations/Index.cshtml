@@ -12,12 +12,12 @@
     <div class=" col-lg-offset-4 col-md-4">
         <form asp-action="VéficationDisponi" method="get">
             @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
-         @*   <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            @*   <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
 
             <div class="form-group">
                 <label>Date debut Séjour</label>
                 <input asp-for="JourDebutSejour" class="form-control" min="@date" />
-                <span asp-validation-for="JourDebutSejour" class="text-danger" ></span>
+                <span asp-validation-for="JourDebutSejour" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Nombre de nuit</label>
@@ -37,18 +37,19 @@
             <div class="form-group">
                 <label>Séjour pour le travail</label>
                 <select asp-for="Travail">
-                   
+
                     <option value="true">Oui</option>
                     <option value="false">Autres</option>
                 </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Filtrer" class="btn btn-default" />
+                <input type="submit" value="Chercher" class="btn btn-primary "/>
             </div>
         </form>
     </div>
 </div>
-
+<br />
+<br />
 <table class="table table-bordered">
     <thead class="alert-danger" >
         <tr >
