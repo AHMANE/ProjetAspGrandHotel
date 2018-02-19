@@ -228,7 +228,7 @@ namespace GrandHotel.Controllers
             return _context.Client.Any(e => e.Id == id);
         }
 
-        // GET: Clients/Edit/5
+        // GET: Clients/AddTelephones/5
         public async Task<IActionResult> AddTelephones()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -262,26 +262,16 @@ namespace GrandHotel.Controllers
                 if (t.Numero == clientVM.TelephonePlus.Numero)
                 {
                     ViewBag.ErreurTelephone = "Vous avez déjà enregistré ce numero " + clientVM.TelephonePlus.Numero + ". Il est déjà dans votre liste.";
-                    return View(clientVM); // ?
+                    return View(clientVM);
                 }
             }
 
-            //if (uniqueTel.Numero != null)
-            //{
-            //    ViewBag.ErreurTelephone = "le numero " + clientVM.TelephonePlus.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
-            //    return View(clientVM); // ?
-            //}
-
-            //if (ModelState.IsValid) // && (uniqueTel == null || uniqueTel.IdClient == clientVM.Client_TelPlus.Id))
-            //{
+            if (ModelState.IsValid || uniqueTel ==null)             
+            {
                 try
                 {
-                    ///////////////////
-                    // _context.Client.Where(c => c.Id == clientVM.Client_TelPlus.Id).Include(t => t.Telephone).FirstOrDefault().Telephone.Add(clientVM.TelephonePlus);
-                    ///////////////////
                     _context.Client.Where(c => c.Id == clientVM.Client_TelPlus.Id).FirstOrDefault().Telephone.Add(clientVM.TelephonePlus);
                     await _context.SaveChangesAsync();
-                    //////////////////
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -295,8 +285,12 @@ namespace GrandHotel.Controllers
                     }
                 }
                 return RedirectToAction(nameof(AddTelephones));
-         //   }
-         //   return View(clientVM);
+            }
+            if (uniqueTel != null)
+            {
+                ViewBag.ErreurTelephone = "le numero " + clientVM.TelephonePlus.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            }
+            return View(clientVM);
         }
 
 
@@ -309,7 +303,7 @@ namespace GrandHotel.Controllers
                 return NotFound();
             }
 
-            var telephoneASupp = await _context.Telephone.Where(t=>t.Numero ==id).SingleOrDefaultAsync();
+            var telephoneASupp = await _context.Telephone.Where(t => t.Numero == id).SingleOrDefaultAsync();
             _context.Telephone.Remove(telephoneASupp);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTelephones));
