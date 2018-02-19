@@ -24,7 +24,7 @@ $(document).ready(function () {
             }
             $('.has-spinner').attr("disabled", true);
             $(self).attr('data-btn-text', $(self).text());
-            var text = 'Chargemment';
+            var text = 'Chargement';
             console.log($(self).attr('data-load-text'));
             if ($(self).attr('data-load-text') != undefined && $(self).attr('data-load-text') != "") {
                 var text = $(self).attr('data-load-text');
