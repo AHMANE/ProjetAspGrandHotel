@@ -57,21 +57,22 @@ namespace GrandHotel.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
+            var client = _context.Client.Include(a => a.Adresse).Include(t => t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var model = new IndexViewModel
-            {
-                Username = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
-            };
+            //var model = new IndexViewModel
+            //{
+            //    Username = user.UserName,
+            //    Email = user.Email,
+            //    PhoneNumber = user.PhoneNumber,
+            //    IsEmailConfirmed = user.EmailConfirmed,
+            //    StatusMessage = StatusMessage
+            //};
 
-            return View(model);
+            return View(client);
         }
 
         [HttpPost]
@@ -156,87 +157,6 @@ namespace GrandHotel.Controllers
             //   return RedirectToAction(nameof(Index));
             return View(client);
         }
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id, Civilite, Nom, Prenom, Email, CarteFidelite,Societe")] Client client)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    client.Email = user.Email;
-        //    if (id != client.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(client);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ClientExists(client.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(client);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id, Civilite, Nom, Prenom, Email, CarteFidelite, Societe, Adresse, Telephone")] Client client)
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    client.Email = user.Email;
-        //    Telephone telVerif = _context.Telephone.Where(t => t.Numero == client.Telephone[0].Numero).FirstOrDefault();
-        //    if (telVerif != null)
-        //    {
-        //        if (telVerif.IdClient == client.Id)
-        //            telVerif = null;
-        //    }
-        //    if (id != client.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid && telVerif == null)
-        //    {
-        //        client.Telephone[0] = client.Tel;
-        //        if (client.Adresse.Rue == null || client.Adresse.Ville == null || client.Adresse.CodePostal == null)
-        //        {
-        //            client.Adresse.Rue = "non renseigné";
-        //            client.Adresse.CodePostal = "00000";
-        //            client.Adresse.Ville = "non renseigné";
-        //        }
-
-
-        //        try
-        //        {
-        //            _context.Update(client);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ClientExists(client.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(client);
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -248,31 +168,36 @@ namespace GrandHotel.Controllers
             var adresseToUpdate = _context.Adresse.Find(client.Id);
 
             Telephone ancienNumero = _context.Telephone.Where(t => t.IdClient == client.Id).FirstOrDefault();
-           // Telephone telephoneToUpdate = _context.Telephone.Find(ancienNumero.Numero);
 
             if (id != client.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid && uniqueTel==null)
+            if (ModelState.IsValid && (uniqueTel == null || uniqueTel.IdClient == client.Id))
             {
                 if (client.Adresse.Rue == null || client.Adresse.Ville == null || client.Adresse.CodePostal == null)
                 {
                     client.Adresse.Rue = "non renseigné";
+                    client.Adresse.Complement = "non renseigné";
                     client.Adresse.CodePostal = "00000";
                     client.Adresse.Ville = "non renseigné";
                 }
 
                 try
-                {                    
-                    _context.Client.Where(c => c.Id == client.Id).Include(t => t.Telephone).FirstOrDefault().Telephone.Add(client.Telephone[0]);
-           //         await _context.SaveChangesAsync();
-                    //////////////////
-                    _context.Telephone.Remove(ancienNumero);
-                    await _context.SaveChangesAsync();
-                    //////////////////
+                {
+
+                    if (uniqueTel == null)
+                    {
+                        ///////////////////
+                        _context.Client.Where(c => c.Id == client.Id).Include(t => t.Telephone).FirstOrDefault().Telephone.Add(client.Telephone[0]);
+                        _context.Telephone.Remove(ancienNumero);
+                        await _context.SaveChangesAsync();
+                        //////////////////
+                    }
+
                     adresseToUpdate.Rue = client.Adresse.Rue;
+                    adresseToUpdate.Complement = client.Adresse.Complement;
                     adresseToUpdate.Ville = client.Adresse.Ville;
                     adresseToUpdate.CodePostal = client.Adresse.CodePostal;
 
@@ -298,11 +223,99 @@ namespace GrandHotel.Controllers
             return View(client);
         }
 
-
         private bool ClientExists(int id)
         {
             return _context.Client.Any(e => e.Id == id);
         }
+
+        // GET: Clients/Edit/5
+        public async Task<IActionResult> AddTelephones()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var client = new ClientVM();
+            client.Client_TelPlus = _context.Client.Include(t => t.Telephone).Where(c => c.Email == user.Email).FirstOrDefault();
+
+            int? id = client.Client_TelPlus.Id;
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            return View(client);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTelephones(int id, [Bind("Client_TelPlus, TelephonePlus")] ClientVM clientVM)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var uniqueTel = _context.Telephone.Where(t => t.Numero == clientVM.TelephonePlus.Numero).FirstOrDefault();
+            clientVM.Client_TelPlus.Telephone = _context.Telephone.Where(c => c.IdClient == clientVM.Client_TelPlus.Id).ToList();
+
+            foreach (Telephone t in clientVM.Client_TelPlus.Telephone)
+            {
+                if (t.Numero == clientVM.TelephonePlus.Numero)
+                {
+                    ViewBag.ErreurTelephone = "Vous avez déjà enregistré ce numero " + clientVM.TelephonePlus.Numero + ". Il est déjà dans votre liste.";
+                    return View(clientVM); // ?
+                }
+            }
+
+            //if (uniqueTel.Numero != null)
+            //{
+            //    ViewBag.ErreurTelephone = "le numero " + clientVM.TelephonePlus.Numero + " est déjà utilisé, veuillez en saisir un nouveau";
+            //    return View(clientVM); // ?
+            //}
+
+            //if (ModelState.IsValid) // && (uniqueTel == null || uniqueTel.IdClient == clientVM.Client_TelPlus.Id))
+            //{
+                try
+                {
+                    ///////////////////
+                    // _context.Client.Where(c => c.Id == clientVM.Client_TelPlus.Id).Include(t => t.Telephone).FirstOrDefault().Telephone.Add(clientVM.TelephonePlus);
+                    ///////////////////
+                    _context.Client.Where(c => c.Id == clientVM.Client_TelPlus.Id).FirstOrDefault().Telephone.Add(clientVM.TelephonePlus);
+                    await _context.SaveChangesAsync();
+                    //////////////////
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ClientExists(clientVM.Client_TelPlus.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(AddTelephones));
+         //   }
+         //   return View(clientVM);
+        }
+
+
+        // GET: Manage/Delete/Numero
+        //[Authorize(role=user)]
+        public async Task<IActionResult> DeleteTelephone(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var telephoneASupp = await _context.Telephone.Where(t=>t.Numero ==id).SingleOrDefaultAsync();
+            _context.Telephone.Remove(telephoneASupp);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(AddTelephones));
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> ChangePassword()

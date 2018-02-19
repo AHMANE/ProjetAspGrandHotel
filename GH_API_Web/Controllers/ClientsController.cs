@@ -22,7 +22,7 @@ namespace GH_API_Web.Controllers
 
         // GET: api/Clients
         [HttpGet]
-        public IEnumerable<Client> GetClients()
+        public IEnumerable<ClientVM> GetClients()
         {
             return _context.Client;
         }
@@ -67,7 +67,7 @@ namespace GH_API_Web.Controllers
 
         // PUT: api/Clients/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClient([FromRoute] int id, [FromBody] Client client)
+        public async Task<IActionResult> PutClient([FromRoute] int id, [FromBody] ClientVM client)
         {
             if (!ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace GH_API_Web.Controllers
 
         // POST: api/Clients
         [HttpPost]
-        public async Task<IActionResult> PostClient([FromBody] Client client)
+        public async Task<IActionResult> PostClient([FromBody] ClientVM client)
         {
             if (!ModelState.IsValid)
             {

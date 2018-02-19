@@ -12,7 +12,7 @@ namespace GH_API_Web.Models
         public byte HeureArrivee { get; set; }
         public bool? Travail { get; set; }
 
-        public Client IdClientNavigation { get; set; }
+        public ClientVM IdClientNavigation { get; set; }
         public Calendrier JourNavigation { get; set; }
         public Chambre NumChambreNavigation { get; set; }
     }

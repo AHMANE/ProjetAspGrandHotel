@@ -10,6 +10,6 @@ namespace GH_API_Web.Models
         public string CodeType { get; set; }
         public bool Pro { get; set; }
 
-        public Client IdClientNavigation { get; set; }
+        public ClientVM IdClientNavigation { get; set; }
     }
 }
