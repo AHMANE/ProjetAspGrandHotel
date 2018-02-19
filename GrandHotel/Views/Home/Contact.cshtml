@@ -1,17 +1,42 @@
-﻿@{
+﻿@model GrandHotel.Models.ContactVM
+<h3>@ViewData["Message"]</h3>
+@{
     ViewData["Title"] = "Contact";
 }
+
 <h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<div id="contact-form row">
+    <form asp-controller="Home" asp-action="Contact" asp-anti-forgery="true" method="post" id="contact">
+        <div class="form-group">
+            <div class="col-md-12 form-group">
+                <label asp-for="Nom" class="control-label"></label>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+                <input asp-for="Nom" class="form-control" placeholder="Nom" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label asp-for="Objet" class="control-label"></label>
+                <input asp-for="Objet" class="form-control" placeholder="Objet" />
+                <span asp-validation-for="Objet" class="text-danger"></span>
+            </div>
+            <div class="col-md-12 form-group">
+                <label asp-for="Message" class="control-label"></label>
+                <textarea asp-for="Message" class="message form-control" placeholder="Votre message..."></textarea>
+            </div>
+            <div class="col-md-6">
 
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+                <button class="btn btn-primary has-spinner" id="three" type="submit">Envoyer  <span class="glyphicon glyphicon-send"></span></button>
+                @*<button class="btn btn-primary" type="submit" id="submit">Envoyer</button>*@
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

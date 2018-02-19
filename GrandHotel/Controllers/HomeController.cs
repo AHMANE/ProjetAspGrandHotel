@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GrandHotel.Models;
+using MimeKit;
+using MailKit.Security;
 
 namespace GrandHotel.Controllers
 {
@@ -22,11 +24,53 @@ namespace GrandHotel.Controllers
             return View();
         }
 
-        public IActionResult Contact()
+        public IActionResult Contact(ContactVM contact)
         {
-            ViewData["Message"] = "Your contact page.";
+            if (!string.IsNullOrWhiteSpace(contact.Email) && !string.IsNullOrWhiteSpace(contact.Nom) && !string.IsNullOrWhiteSpace(contact.Message))
+            {
 
-            return View();
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("GrandHotel", "from.gtmtest94@gmail.com"));
+                //message.To.Add(new MailboxAddress("amanehafid@yahoo.fr"));
+                message.To.Add(new MailboxAddress(contact.Email));
+                message.To.Add(new MailboxAddress("gtmtest94@gmail.com"));
+
+                message.Subject = $"[GrandHotel] {contact.Objet}";
+
+                var builder = new BodyBuilder
+                {
+                    HtmlBody = $"<div><span style='font-weight: bold'>De</span> : {contact.Nom} </div><div><span style='font-weight: bold'>Mail</span> : {contact.Email}</div><div style='margin-top: 30px'>{contact.Message}</div>"
+                };
+
+                message.Body = builder.ToMessageBody();
+
+                //mtpClient client = new SmtpClient(contact);
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                    client.Connect("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
+                    client.Authenticate("gtmtest94@gmail.com", "gtmtest24031988");
+
+
+                    client.Send(message);
+                    ViewBag.message = "Merci ! Votre message a bien été envoyée.";
+
+                    client.Disconnect(true);
+
+
+
+
+                }
+                // var cont = contact.Email.Remove(0);
+
+                //ViewData["Message"] = "Your contact page.";
+                //
+                return View();
+            }
+
+            return View(contact);
         }
 
         public IActionResult Error()

@@ -35,8 +35,17 @@
 }
 #indexRecherch {
     background-image: url('../images/h5.jpg');
-    //background-image: url('../images/h4.jpg');
-    //background-image: url('../images/h3.jpg');
-    //background-image: url('../images/h2.jpg');
-    //background-image: url('../images/h1.jpg');
+
+}
+.has-spinner.active {
+    cursor: progress;
+}
+
+    .has-spinner.active .spinner {
+        opacity: 1;
+        width: auto;
+    }
+
+.has-spinner.btn.active .spinner {
+    min-width: 20px;
 }
