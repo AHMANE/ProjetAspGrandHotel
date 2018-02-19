@@ -60,24 +60,23 @@
 <div class="row">
     <div class="col-md-3">
         <br />
-        <a asp-area="" asp-controller="Reservations" asp-action="Index" class="btn btn-primary glyphicon glyphicon-search btn-lg" role="button">  Réservation</a>
+        <a asp-area="" asp-controller="Reservations" asp-action="Index" class="btn btn-primary glyphicon glyphicon-bed btn-lg" role="button">  Réservation</a>
     </div>
     <div class="col-md-3">
         <br />
-        <a asp-area="" asp-controller="ListeFactures" asp-action="Index" class="btn btn-primary glyphicon glyphicon-search btn-lg" role="button">  Mes factures</a>
+        <a asp-area="" asp-controller="ListeFactures" asp-action="Index" class="btn btn-primary glyphicon glyphicon-list btn-lg" role="button"> Mes factures</a>
     </div>
    
+    
+
     <div class="col-md-3">
         <br />
-        <a asp-area="" asp-controller="Home" asp-action="Download"  class="btn btn-primary glyphicon glyphicon-download btn-lg" role="button">  Télécharger l'Appli</a>
-    </div>
+        @*<li><a asp-area="" asp-controller="GestionInterne" asp-action="Index"></a></li>*@
+        <a asp-area="" asp-controller="GestionInterne" asp-action="Index" class="btn btn-primary glyphicon glyphicon-list btn-lg" role="button">  Gestion Interne</a>
 
-    @*<div class="col-md-3">
-            <h2>Run &amp; Deploy</h2>
-            <ul>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-                <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-            </ul>
-        </div>*@
+    </div>
+    <div class="col-md-3">
+    <br />
+    <a asp-area="" asp-controller="Home" asp-action="Download" class="btn btn-primary glyphicon glyphicon-download btn-lg" role="button">  Télécharger l'Appli</a>
+</div>
 </div>

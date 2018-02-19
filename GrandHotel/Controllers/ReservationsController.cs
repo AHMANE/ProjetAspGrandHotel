@@ -51,7 +51,7 @@ namespace GrandHotel.Controllers
             return View("Index", tvm);
            
         }
-        //public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
+        //Récupération des chmabre disponible 
         public async Task<IActionResult> VéficationDisponi(DateTime JourDebutSejour, int NombreDeNuit, byte NbPersonnes, byte HeureArrivee, bool? Travail)
         {
             
@@ -141,7 +141,7 @@ namespace GrandHotel.Controllers
             
         }
        
-        // **************************Afficher les détait de la chambre selectionnée Il prend en parametre Id=Numerod e chambre*****************************************//
+        // **************************Afficher les détait de la chambre selectionnée Il prend en parametre Id=Numerod de chambre*****************************************//
         // GET: Reservations/Details/5
         public async Task<IActionResult> Details(short id, int ids)
         {
@@ -230,8 +230,9 @@ namespace GrandHotel.Controllers
             HttpContext.Session.Clear();
             return View();
         }
-
-        [Authorize]
+        
+        // ************************** Enrigistrement de la reservation dans la base*****************************************//
+                [Authorize]
         // GET: Reservations/Create
         public async Task<IActionResult> Create(short id)
         {
